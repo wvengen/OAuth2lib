@@ -1,0 +1,75 @@
+/* 
+    Document   : style
+    Created on : Mar 22, 2010, 10:44:03 AM
+    Author     : elenalr
+    Description:
+        Purpose of the stylesheet follows.
+*/
+body{
+    color: #333;
+    font-family: helvetica, verdana;
+}
+
+.main{
+    width: 800px;
+}
+
+h1{
+    margin:10px;
+    margin-top:20px;
+}
+.form{
+   /* float:left;*/
+ /*   width:165px;*/
+    background:#FFd69f;
+    padding-right:20px;
+    padding-left: 20px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    margin:10px;
+    border:2px dotted #FFc77c;
+}
+.form h2{
+    color: #333;
+}
+.selector{
+    display:inline;
+    margin-right:30px;
+}
+.selector select{
+    margin-bottom:10px;
+}
+.request{
+ /*   float:left;*/
+    background:#FFd69f;
+    padding-right:20px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin:10px;
+    border:2px dotted #FFc77c;
+/*    min-width:400px;*/
+  /*  min-height: 320px;*/
+}
+
+.error{
+    margin:10px;
+    background: #FEA84F;
+    padding:5px;
+    padding-left:15px;
+    padding-right: 15px;
+    color:white;
+}
+
+.access_token{
+ /*   float:left;*/
+    background:#FFd69f;
+    padding-right:20px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin:10px;
+    border:2px dotted #FFc77c;
+/*    min-width:400px;*/
+  /*  min-height: 320px;*/
+}

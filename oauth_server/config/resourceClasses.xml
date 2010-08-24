@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <Resources>
+            <Scope id="http://www.rediris.es/sir/api/sps_available.php">
+                <ResourceClass>Resource</ResourceClass>
+                <ResourceClassArchiveName>Resource.class.php</ResourceClassArchiveName>
+            </Scope>
+            <Scope id="http://oauth-server/photos/">
+                <ResourceClass>photoResource</ResourceClass>
+                <ResourceClassArchiveName>photoResource.class.php</ResourceClassArchiveName>
+            </Scope>
+</Resources>

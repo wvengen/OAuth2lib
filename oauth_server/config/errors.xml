@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<errors>
+    <error id="invalid_request">
+        <error_description>The request is missing a required parameter, 
+        includes an unsupported parameter or parameter value, repeats the same parameter,
+        uses more than one method for including an access token, or is otherwise malformed.
+        The resource server MUST respond with the HTTP 400 (Bad Request) status
+        code.</error_description>
+        <!--<error_uri>TODO</error_uri>-->
+    </error>
+    <error id="invalid_token"> <error_description>
+            The access token provided is invalid.  Resource servers SHOULD
+            use this error code when receiving an expired token which
+            cannot be refreshed to indicate to the client that a new
+            authorization is necessary.  The resource server MUST respond
+    with the HTTP 401 (Unauthorized) status code.</error_description></error>
+
+    <error id="expired_token"><error_description>
+            The access token provided has expired.  Resource servers SHOULD
+            only use this error code when the client is expected to be able
+            to handle the response and request a new access token using the
+            refresh token issued with the expired access token.  The
+            resource server MUST respond with the HTTP 401 (Unauthorized)
+    status code.</error_description></error>
+
+    <error id="insufficient_scope"><error_description>
+            The request requires higher privileges than provided by the
+            access token.  The resource server SHOULD respond with the HTTP
+            403 (Forbidden) status code and MAY include the "scope"
+            attribute with the scope necessary to access the protected
+    resource.</error_description></error>
+</errors>

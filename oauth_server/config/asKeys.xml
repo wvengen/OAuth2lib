@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Registered Auth Servers-->
+<AuthServers>
+    <AuthServer id="authServerID" url="authServerURL">
+        <Key>example_key</Key>
+    </AuthServer>
+    <AuthServer id="authServerID2" url="authServerURL">
+        <Key>example_key</Key>
+    </AuthServer>
+</AuthServers>
