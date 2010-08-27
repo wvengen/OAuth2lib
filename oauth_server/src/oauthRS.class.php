@@ -1,9 +1,10 @@
 <?php
 
-require_once('src/resources/photoResource.class.php');
-require_once('src/ErrorList.class.php');
-require_once('src/AuthServerList.class.php');
-require_once('src/LoadResourceConfig.class.php');
+set_include_path(get_include_path().PATH_SEPARATOR.dirname(__FILE__));
+
+require_once('ErrorList.class.php');
+require_once('AuthServerList.class.php');
+require_once('LoadResourceConfig.class.php');
 
 class oauthRS {
 
@@ -74,7 +75,6 @@ class oauthRS {
 
     /**
      * Function that checks if the request  (GET or POST) is a valid one.
-     * TODO
      * @param <Array> $request
      * @return boolean  True if is a valid one, false otherwise.
      */
@@ -97,7 +97,6 @@ class oauthRS {
 
     /**
      * Function that checks if the request  (header) is a valid one.
-     * TODO
      * @param <Array> $request
      * @return boolean  True if is a valid one, false otherwise.
      */
@@ -120,14 +119,30 @@ class oauthRS {
                         }
                     }
                 }
+                if(isset($_REQUEST)){
+                    foreach($_REQUEST as $id => $req){
+                        $this->extra[$id] = $req;
+                        $this->error(print_r($this->extra,1));
+                    }
+                }
             }
         }
         if ($this->token == null) {
             $this->error = "invalid_request";
         } else {
             $dev = true;
-        }
+        } 
         return $dev;
+    }
+
+    private function processScope($scope){
+        $s = explode("?",$scope);
+        $this->scope = $s[0];
+        $atts = explode("&",$s[1]);
+        foreach($atts as $att){
+            $aux = explode("=",$att);
+            $this->extra[$aux[0]] = $aux[1];
+        }       
     }
 
     /**
@@ -147,6 +162,7 @@ class oauthRS {
             $this->person_id = base64_decode($array[2]);
             $this->scope = base64_decode($array[3]);
             $this->extra['sHO']=base64_decode($array[4]);
+            $this->processScope($this->scope);
             $this->createResource($this->scope);
             if (!$this->checkPersonScope($this->person_id)) {
                 $this->error = "insufficient_scope";
@@ -233,14 +249,16 @@ class oauthRS {
      * @return null if an error exists
      */
     private function createResource() {
+        $this->error("createResource");
         $conf = new LoadResourceConfig();
         if ($conf->hasClass($this->scope)) {
             $class = $conf->getClass($this->scope);
             if ($conf->hasArchiveName($this->scope)) {
                 $class_arch_name = $conf->getArchiveName($this->scope);
-                include_once "src/resources/" . $class_arch_name;
+                include_once dirname(__FILE__) . "/resources/" . $class_arch_name;
                 $reflect = new ReflectionClass($class);
                 $this->resource = $reflect->newInstance();
+                
             } else {
                 $this->error = "invalid-resource-configuration";
             }

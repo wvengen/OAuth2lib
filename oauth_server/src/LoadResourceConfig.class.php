@@ -7,9 +7,12 @@ class LoadResourceConfig {
     protected $classes;
     protected $archive_names;
 
-    public function __construct($file="config/resourceClasses.xml") {
+    public function __construct($file="") {
         $this->classes = array();
         $this->archive_names = array();
+         if ($file == '') {
+             $file = dirname(dirname(__FILE__)) . "/config/resourceClasses.xml";
+         }
         $this->loadFile($file);
     }
 
@@ -20,10 +23,9 @@ class LoadResourceConfig {
                            $id = (String) $child['id'];
                         if(isset($child->ResourceClass))
                              $this->classes[$id] = (String) $child->ResourceClass;
-                        if(isset($child->ResourceClassArchiveName))
-                              $this->archive_names[$id] = (String) $child->ResourceClassArchiveName;
-                
-            }
+                        if(isset($child->ResourceArchiveName))
+                              $this->archive_names[$id] = (String) $child->ResourceArchiveName;
+                   }
         } catch (Exception $exc) {
             header("HTTP/1.0 400 Bad Request");
             header("Content-Type: application/json");

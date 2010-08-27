@@ -11,17 +11,31 @@ class saml2AssertionChecking implements IAssertionChecking {
     private $personId;
     private $error;
     private $scope;
+    private $sho;
     /**
      * Load the policies from a  given file.
      * @param <type> $rulesf The archive file with the policy.
      */
-    public function __construct($scope,$rulesf = "config/policies.xml") {
+    public function __construct($scope,$rulesf = "") {
         $this->error = false;
-        $this->scope = $scope;
+        $this->scope = $this->cleanScope($scope);
+        if ( $rulesf == '' ) {
+             $rulesf = dirname(dirname(dirname(__FILE__))) . "/config/policies.xml";
+        }
         if(0==sizeof($this->getPolicy($rulesf))) {
-         //   error_log("ERROR EXTRAYENDO POLÍTICAS");
+            error_log("ERROR EXTRAYENDO POLÍTICAS");
             $this->error = true;
         }
+
+    }
+
+    private function cleanScope($scope){
+        if(strpos($scope,"?")==0){
+            $res = $scope;
+        }else{
+            $res =  substr($scope, 0, strpos($scope,"?"));
+        }
+        return $res;
     }
 
     /**
@@ -36,6 +50,7 @@ class saml2AssertionChecking implements IAssertionChecking {
         $dev = false;
         if($this->matchRules()!=false) {
             $this->personId = $this->assertion['urn:mace:dir:attribute-def:eduPersonTargetedID'][0];
+            $this->sho = $this->assertion['urn:mace:dir:attribute-def:schacHomeOrganization'][0];
             $dev = true;
         }
         return $dev;
@@ -91,6 +106,9 @@ class saml2AssertionChecking implements IAssertionChecking {
         return $this->error;
     }
    
+   public function getSHO(){
+         return $this->sho;
+     }
 
 }
 ?>

@@ -3,7 +3,7 @@
 /**
  * Resource example class
  */
-require_once('src/resources/IServerResource.interface.php');
+require_once(dirname(__FILE__) . '/IServerResource.interface.php');
 class photoResource implements IServerResource {
     const SC = "http://oauth-server/photos/";
     protected $scopes;

@@ -6,8 +6,8 @@
  * @author Elena Lozano <elena.lozano@rediris.es>
  * @package oauth_client
  */
-include_once 'src/OAuthClient.class.php';
-include_once 'src/LoadConfig.class.php';
+ include(dirname(__FILE__) . '/OAuthClient.class.php');
+ include(dirname(__FILE__) . '/LoadConfig.class.php');
 
 class OAuth {
     const HEADER = "HTTP_Authorization_Header";
@@ -15,7 +15,7 @@ class OAuth {
     const BODY = "Form-Encoded_Body_Parameter";
 
     const SAML2 = "urn:oasis:names:tc:SAML:2.0:assertion";
-    const PAPI = "urn:papi";
+    const PAPI = "urn:mace:rediris.es:papi";
 
     const HTML = "HTML";
     const JSON = "JSON";
@@ -44,9 +44,13 @@ class OAuth {
      * @param <String> $clientid
      * @param <String> $clientsecret 
      */
-    public function __construct($file = "config/clientConfig.xml") {
-         $this->error = null;
-         $this->resource = null;
+    public function __construct($file = "") {
+        if ($file == ''){
+             $file = dirname(dirname(__FILE__)) . '/config/clientConfig.xml';
+         }
+
+        $this->error = null;
+        $this->resource = null;
         $this->conf = new LoadConfig($file);
         $this->debug_active = $this->conf->get_debug_active_client();
         $this->error_type = $this->conf->get_error_type();
@@ -86,6 +90,15 @@ class OAuth {
         return $dev;
     }
 
+     private function cleanScope($scope){
+        if(strpos($scope,"?")==0){
+            $res = $scope;
+        }else{
+            $res =  substr($scope, 0, strpos($scope,"?"));
+        }
+        return $res;
+    }
+
     /**
      * Function that given an OAuthClient object, formats the corresponding response depending on the scope of the request.
      * @param <OAuthClient> $oauth
@@ -93,11 +106,11 @@ class OAuth {
      */
     public function returnResource($oauth) {
         $this->error("returnResource");
-        if ($this->conf->hasFormatClass($this->scope)) {
-            $class = $this->conf->getFormatClass($this->scope);
-            if ($this->conf->hasFormatArchiveName($this->scope)) {
-                $class_arch_name = $this->conf->getFormatArchiveName($this->scope);
-                include_once "src/response_formats/" . $class_arch_name;
+        if ($this->conf->hasFormatClass($this->cleanScope($this->scope))) {
+            $class = $this->conf->getFormatClass($this->cleanScope($this->scope));
+            if ($this->conf->hasFormatArchiveName($this->cleanScope($this->scope))) {
+                $class_arch_name = $this->conf->getFormatArchiveName($this->cleanScope($this->scope));
+                include_once dirname(__FILE__) . "/response_formats/" . $class_arch_name;
                 $reflect = new ReflectionClass($class);
                 $string =  $reflect->newInstance()->formatResource($oauth->getResource());
             } else {

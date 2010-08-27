@@ -1,5 +1,5 @@
 <?php
-include_once 'src/oauthRS.class.php';
+require_once 'src/oauthRS.class.php';
 /**
  * Request resource Endpoint
  */

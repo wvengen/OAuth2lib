@@ -6,15 +6,17 @@
  * @author Elena Lozano <elena.lozano@rediris.es>
  * @package oauth_as
  */
+set_include_path(get_include_path().PATH_SEPARATOR.dirname(__FILE__));
 require_once('assertions/saml2AC.class.php');
 require_once('assertions/sirAC.class.php');
 require_once('ErrorList.class.php');
 require_once('ClientList.class.php');
 require_once('ServerKeys.class.php');
 
+
 class oauthAS {
     const SAML2 = "urn:oasis:names:tc:SAML:2.0:assertion";
-    const PAPI = "urn:papi";
+    const PAPI = "urn:mace:rediris.es:papi";
 
     protected $error;
     protected $debug_active;
@@ -140,10 +142,19 @@ class oauthAS {
     private function isValidScope() {
         $this->error("isValidScope");
         $res = false;
-        if(array_key_exists($this->scope, $this->servers)){
+        if(array_key_exists($this->cleanScope($this->scope), $this->servers)){
             $this->error = "invalid_scope";
         } else {
             $res = true;
+        }
+        return $res;
+    }
+
+  private function cleanScope($scope){
+        if(strpos($scope,"?")==0){
+            $res = $scope;
+        }else{
+            $res =  substr($scope, 0, strpos($scope,"?"));
         }
         return $res;
     }
@@ -183,9 +194,9 @@ class oauthAS {
         $this->error("isValidAssertion");
         $res = false;
         if (strcmp(OAuthAS::SAML2, $this->assertion_type) == 0) {
-            $this->assertion_checking = new saml2AssertionChecking();
+            $this->assertion_checking = new saml2AssertionChecking($this->cleanScope($this->scope));
         } else if (strcmp(OAuthAS::PAPI, $this->assertion_type) == 0) {
-            $this->assertion_checking = new sirAssertionChecking($this->scope);
+            $this->assertion_checking = new sirAssertionChecking($this->cleanScope($this->scope));
         }else{
             $this->error = "invalid_grant";
             return $res;
@@ -201,7 +212,6 @@ class oauthAS {
 
     /**
      * Function that generates an access token from the parameters.
-     * //TODO darle una vuelta a lo del get person ID: Deberá haber person Id en la aserción
      */
     private function generateAccessToken() {
         $this->error("generateAccessToken");
@@ -210,7 +220,7 @@ class oauthAS {
         $change = 0.000001;
         $time = microtime(true) + $this->lifetime*$change;
         $message = base64_encode($this->client_id) . ":" . base64_encode($this->assertion_checking->getPersonId()) . ":" . base64_encode($this->scope).  ":" . base64_encode($this->assertion_checking->getSHO()) . ":" . base64_encode($time);
-        $token = hash_hmac("sha256", $message, $this->servers->getKey($this->scope)) . ":" . $message;
+        $token = hash_hmac("sha256", $message, $this->servers->getKey($this->cleanScope($this->scope))) . ":" . $message;
         $this->access_token = $token;
     }
 

@@ -7,7 +7,7 @@
           SAML2 = "urn:oasis:names:tc:SAML:2.0:assertion";
           PAPI = "urn:papi";
         -->
-        <AssertionType>urn:papi</AssertionType>
+        <AssertionType>urn:mace:rediris.es:papi</AssertionType>
         <!--  The access grant type included in the request. In this library the type is "assertion". -->
         <GrantType>assertion</GrantType>
         <!-- Authorization Server URL.-->

@@ -37,7 +37,6 @@ class AssertionPolicy {
         foreach ($this->getAttributes() as $attr) {
             $key = $attr[0];
             $value = $attr[1];
-            error_log("key: ".$key."///value:".$value);
             //Si existe ese param en las keys del array de la aserción
             if (in_array($key, array_keys($userAttrs))) {
                 if(is_array($userAttrs[$key])) {

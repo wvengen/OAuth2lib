@@ -8,11 +8,14 @@ class ErrorList {
     protected $errors;
     protected $debug_active;
 
-    public function __construct($file = "config/errors.xml") {
+    public function __construct($file = "") {
         $this->debug_active=false;
         $this->error("");
         $this->descriptions=array();
         $this->uris=array();
+         if ($file == '') {
+             $file = dirname(dirname(__FILE__)) . "/config/errors.xml";
+         }
         $this->loadErrors($file);
     }
 

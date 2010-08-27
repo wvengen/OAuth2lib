@@ -4,7 +4,10 @@
  */
 class ClientList {
     private $clients;
-    public function __construct($file = "config/keys.xml") {
+    public function __construct($file = "") {
+        if ($file == '') {
+             $file = dirname(dirname(__FILE__)) . "/config/keys.xml";
+        }
         $this->loadClients($file);
     }
     public function getSecret($client_id) {

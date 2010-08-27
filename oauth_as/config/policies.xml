@@ -3,9 +3,9 @@
     <Assertion type="saml2">
         <Policies>
             <Policy>
-                <Attributes check="all" >
+               <!-- <Attributes check="all" >
                     <Attribute name="urn:mace:dir:attribute-def:eduPersonScopedAffiliation" value="staff@rediris.es" />
-                </Attributes>
+                </Attributes>-->
             </Policy>
             <!--   <Policy>
                 <Attributes check="any" >

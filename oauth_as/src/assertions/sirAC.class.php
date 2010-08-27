@@ -19,14 +19,27 @@ class sirAssertionChecking implements IAssertionChecking {
      * Load the policies from a  given file.
      * @param <type> $rulesf The archive file with the policy.
      */
-    public function __construct($scope, $rulesf = "config/policies.xml") {
+    public function __construct($scope, $rulesf = "") {
         $this->error = false;
-        $this->scope = $scope;
+        $this->scope = $this->cleanScope($scope);
         $this->policy = array();
+           if ( $rulesf == '' ) {
+             $rulesf = dirname(dirname(dirname(__FILE__))) . "/config/policies.xml";
+        }
         if (0 == sizeof($this->getPolicy($rulesf))) {
             error_log("ERROR EXTRAYENDO POLÍTICAS");
             $this->error = true;
         }
+    }
+
+
+    private function cleanScope($scope){
+        if(strpos($scope,"?")==0){
+            $res = $scope;
+        }else{
+            $res =  substr($scope, 0, strpos($scope,"?"));
+        }
+        return $res;
     }
 
     /**

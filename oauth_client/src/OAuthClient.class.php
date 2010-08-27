@@ -367,6 +367,7 @@ class OAuthClient {
      * @return <String> The response without the header
      */
     private function OLDcleanHeader($string) {
+        $this->error("oldcleanheader");
         $st="";
         $pattern = '/Content-Type:(.*)\/(.*)/';
         preg_match_all($pattern, $string, $matches);
@@ -380,9 +381,9 @@ class OAuthClient {
         return $st;
     }
 
-    /*RedIRIS clean header*/
+     /*RedIRIS clean header*/
         private function cleanHeader($string) {
- 	   $this->error("Clean Header: ".$string);
+ 	   $this->error("Clean Header: ");
         $st="";
         $pattern = '/\{"(.*)\"}/';
         preg_match_all($pattern, $string, $matches);
@@ -396,8 +397,11 @@ class OAuthClient {
         	}else{
         		$this->error = "Unknown response type";
         	}
+        }       
+        if(strcmp($st,"")==0){
+            //Para pruebas en local
+            $st=$this->OLDcleanHeader($string);
         }
-        $this->error("Clean header result: ".$st);
         return $st;
     }
 
