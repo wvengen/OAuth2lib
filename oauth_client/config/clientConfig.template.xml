@@ -5,7 +5,7 @@
     <AuthServerConfig>
         <!-- Type of the assertion
           SAML2 = "urn:oasis:names:tc:SAML:2.0:assertion";
-          PAPI = "urn:papi";
+          PAPI = "urn:mace:rediris.es:papi";
         -->
         <AssertionType>urn:mace:rediris.es:papi</AssertionType>
         <!--  The access grant type included in the request. In this library the type is "assertion". -->
@@ -27,11 +27,11 @@
         <ResponseFormats>
             <Scope id="http://www.rediris.es/sir/api/sps_available.php">
                 <FormatClass>DefaultFormattingResource</FormatClass>
-                <FormatClassArchiveName>DefaultFormattingResource.class.php</FormatClassArchiveName>
+                <FormatArchiveName>DefaultFormattingResource.class.php</FormatArchiveName>
             </Scope>
             <Scope id="http://oauth-server/photos/">
                 <FormatClass>PhotoFormattingResource</FormatClass>
-                <FormatClassArchiveName>PhotoFormattingResource.class.php</FormatClassArchiveName>
+                <FormatArchiveName>PhotoFormattingResource.class.php</FormatArchiveName>
             </Scope>
         </ResponseFormats>
     </ResServerConfig>
@@ -40,7 +40,7 @@
  <!--Client App Configuration-->
     <ClientConfig>
         <ClientID>app_client_1</ClientID>
-        <ClientSecret>example_key</ClientSecret>
+        <ClientSecret>client_example_key</ClientSecret>
         <!-- Error Response type. Defined by the constants HTML or JSON.. -->
         <ErrorResponseType>HTML</ErrorResponseType>
         <DefaultScope>http://www.rediris.es/sir/api/sps_available.php</DefaultScope>

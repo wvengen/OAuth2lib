@@ -1,6 +1,6 @@
 <?php
 
-set_include_path(get_include_path().PATH_SEPARATOR.dirname(__FILE__));
+set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__));
 
 require_once('ErrorList.class.php');
 require_once('AuthServerList.class.php');
@@ -119,10 +119,10 @@ class oauthRS {
                         }
                     }
                 }
-                if(isset($_REQUEST)){
-                    foreach($_REQUEST as $id => $req){
+                if (isset($_REQUEST)) {
+                    foreach ($_REQUEST as $id => $req) {
                         $this->extra[$id] = $req;
-                        $this->error(print_r($this->extra,1));
+                        $this->error(print_r($this->extra, 1));
                     }
                 }
             }
@@ -131,18 +131,20 @@ class oauthRS {
             $this->error = "invalid_request";
         } else {
             $dev = true;
-        } 
+        }
         return $dev;
     }
 
-    private function processScope($scope){
-        $s = explode("?",$scope);
+    private function processScope($scope) {
+        $s = explode("?", $scope);
         $this->scope = $s[0];
-        $atts = explode("&",$s[1]);
-        foreach($atts as $att){
-            $aux = explode("=",$att);
-            $this->extra[$aux[0]] = $aux[1];
-        }       
+        if (isset($s[1])) {
+            $atts = explode("&", $s[1]);
+            foreach ($atts as $att) {
+                $aux = explode("=", $att);
+                $this->extra[$aux[0]] = $aux[1];
+            }
+        }
     }
 
     /**
@@ -154,20 +156,19 @@ class oauthRS {
         $dev = false;
         $array = explode(":", $this->token);
         $digest = $array[0];
-        $token = $array[1] . ':' . $array[2] . ':' . $array[3] . ':' . $array[4] . ':' . $array[5];
+        $token = $array[1] . ':' . $array[2] . ':' . $array[3] . ':'  . $array[4];
         $id_client = base64_decode($array[1]);
         if (!$this->authservers->checkTokenKey($token, $digest)) {
             $this->error = "invalid_token";
         } else {
             $this->person_id = base64_decode($array[2]);
             $this->scope = base64_decode($array[3]);
-            $this->extra['sHO']=base64_decode($array[4]);
             $this->processScope($this->scope);
             $this->createResource($this->scope);
             if (!$this->checkPersonScope($this->person_id)) {
                 $this->error = "insufficient_scope";
             } else {
-                $time = base64_decode($array[5]);
+                $time = base64_decode($array[4]);
                 if (microtime(true) > $time) {
                     $dev = true;
                 } else {
@@ -258,7 +259,6 @@ class oauthRS {
                 include_once dirname(__FILE__) . "/resources/" . $class_arch_name;
                 $reflect = new ReflectionClass($class);
                 $this->resource = $reflect->newInstance();
-                
             } else {
                 $this->error = "invalid-resource-configuration";
             }
@@ -268,4 +268,5 @@ class oauthRS {
     }
 
 }
+
 ?>

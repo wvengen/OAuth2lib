@@ -3,7 +3,7 @@
 /**
  * @package oauth_client
  */
-include_once 'config/papiUtils.php';
+include_once 'src/utils/papiUtils.php';
 include_once 'src/OAuth.class.php';
 
 $assertion = $_SESSION['userdata'];
@@ -15,11 +15,7 @@ if ($assertion['PAPIAuthValue'] == 0 || !isset($_REQUEST['selector_name'])) {
     $oauth_rs = "https://oauth-server.rediris.es/oauth2lib_svn/oauth2lib/trunk//oauth_server/serverEndpoint.php";
     $client->setAs($oauth_as);
     $client->setRs($oauth_rs);
-    if ($_REQUEST['selector_name'] == 1) {
-        $scope = "http://oauth-server/photos/";
-        $client->setScope($scope);
-    }
-    $scope = "http://www.rediris.es/sir/api/sps_available.php"."?otros=uno&mas=dos&mail=".$assertion['mail'];
+    $scope = "http://www.rediris.es/sir/api/sps_available.php"."?sho=".$assertion['sHO'];
     $client->setScope($scope);
     $res = $client->doOAuthFlow($assertion);
     if (!$res) {

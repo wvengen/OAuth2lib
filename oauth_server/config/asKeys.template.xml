@@ -2,9 +2,9 @@
 <!--Registered Auth Servers-->
 <AuthServers>
     <AuthServer id="authServerID" url="authServerURL">
-        <Key>example_key</Key>
+        <Key>as_example_key</Key>
     </AuthServer>
     <AuthServer id="authServerID2" url="authServerURL">
-        <Key>example_key</Key>
+        <Key>as_example_key2</Key>
     </AuthServer>
 </AuthServers>

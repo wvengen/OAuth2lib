@@ -13,7 +13,6 @@ class sirAssertionChecking implements IAssertionChecking {
     private $personId;
     private $error;
     private $scope;
-    private $sho;
 
     /**
      * Load the policies from a  given file.
@@ -53,7 +52,6 @@ class sirAssertionChecking implements IAssertionChecking {
         if ($this->matchRules() != false) {
             if (isset($this->assertion['uid'])) {
                 $this->personId = $this->assertion['uid'];
-           		$this->sho = $this->assertion['sHO'];
                 $dev = true;
             }
         }
@@ -107,9 +105,6 @@ class sirAssertionChecking implements IAssertionChecking {
 
     public function getError() {
         return $this->error;
-    }
-    public function getSHO(){
-        return $this->sho;
     }
 
 }

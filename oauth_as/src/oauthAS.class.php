@@ -219,7 +219,10 @@ class oauthAS {
         //1 microsecond = 1.0 × 10-6 seconds
         $change = 0.000001;
         $time = microtime(true) + $this->lifetime*$change;
-        $message = base64_encode($this->client_id) . ":" . base64_encode($this->assertion_checking->getPersonId()) . ":" . base64_encode($this->scope).  ":" . base64_encode($this->assertion_checking->getSHO()) . ":" . base64_encode($time);
+        $message = base64_encode($this->client_id) . ":"
+                . base64_encode($this->assertion_checking->getPersonId()) . ":"
+                        . base64_encode($this->scope).  ":"
+                                . base64_encode($time);
         $token = hash_hmac("sha256", $message, $this->servers->getKey($this->cleanScope($this->scope))) . ":" . $message;
         $this->access_token = $token;
     }

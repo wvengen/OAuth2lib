@@ -11,7 +11,6 @@ class saml2AssertionChecking implements IAssertionChecking {
     private $personId;
     private $error;
     private $scope;
-    private $sho;
     /**
      * Load the policies from a  given file.
      * @param <type> $rulesf The archive file with the policy.
@@ -50,7 +49,6 @@ class saml2AssertionChecking implements IAssertionChecking {
         $dev = false;
         if($this->matchRules()!=false) {
             $this->personId = $this->assertion['urn:mace:dir:attribute-def:eduPersonTargetedID'][0];
-            $this->sho = $this->assertion['urn:mace:dir:attribute-def:schacHomeOrganization'][0];
             $dev = true;
         }
         return $dev;
@@ -106,9 +104,6 @@ class saml2AssertionChecking implements IAssertionChecking {
         return $this->error;
     }
    
-   public function getSHO(){
-         return $this->sho;
-     }
 
 }
 ?>

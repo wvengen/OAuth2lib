@@ -6,7 +6,7 @@ class ClientList {
     private $clients;
     public function __construct($file = "") {
         if ($file == '') {
-             $file = dirname(dirname(__FILE__)) . "/config/keys.xml";
+             $file = dirname(dirname(__FILE__)) . "/config/clientKeys.xml";
         }
         $this->loadClients($file);
     }
