@@ -4,9 +4,11 @@
  */
 class ClientList {
     private $clients;
-    public function __construct($file = "") {
-        if ($file == '') {
+    public function __construct($dir = "") {
+        if ($dir == '') {
              $file = dirname(dirname(__FILE__)) . "/config/clientKeys.xml";
+        }else{
+            $file = $dir."clientKeys.xml";
         }
         $this->loadClients($file);
     }

@@ -6,8 +6,8 @@
  * @author Elena Lozano <elena.lozano@rediris.es>
  * @package oauth_client
  */
- include(dirname(__FILE__) . '/OAuthClient.class.php');
- include(dirname(__FILE__) . '/LoadConfig.class.php');
+ include('oauth_client/src/OAuthClient.class.php');
+ include('oauth_client/src//LoadConfig.class.php');
 
 class OAuth {
     const HEADER = "HTTP_Authorization_Header";
@@ -109,8 +109,7 @@ class OAuth {
         if ($this->conf->hasFormatClass($this->cleanScope($this->scope))) {
             $class = $this->conf->getFormatClass($this->cleanScope($this->scope));
             if ($this->conf->hasFormatArchiveName($this->cleanScope($this->scope))) {
-                $class_arch_name = $this->conf->getFormatArchiveName($this->cleanScope($this->scope));
-                include_once dirname(__FILE__) . "/response_formats/" . $class_arch_name;
+                include_once $this->conf->getFormatArchiveName($this->cleanScope($this->scope));
                 $reflect = new ReflectionClass($class);
                 $string =  $reflect->newInstance()->formatResource($oauth->getResource());
             } else {

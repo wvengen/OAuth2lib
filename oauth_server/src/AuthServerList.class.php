@@ -5,11 +5,13 @@
 class AuthServerList {
     private $keys;
     
-    public function __construct($file = "") {
+    public function __construct($dir = "") {
         $this->keys=array();
-         if ($file == '') {
-             $file = dirname(dirname(__FILE__)) . "/config/asKeys.xml";
-         }
+       if ($dir == '') {
+            $file = dirname(dirname(__FILE__)) . "/config/asKeys.xml";
+        } else {
+            $file = $dir . "asKeys.xml";
+        }
         $this->loadASs($file);
     }
     public function checkTokenKey($token,$digest) {

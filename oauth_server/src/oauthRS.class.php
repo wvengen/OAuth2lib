@@ -1,10 +1,8 @@
 <?php
 
-set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__));
-
-require_once('ErrorList.class.php');
-require_once('AuthServerList.class.php');
-require_once('LoadResourceConfig.class.php');
+include_once('oauth_server/src/ErrorList.class.php');
+include_once('oauth_server/src/AuthServerList.class.php');
+include_once('oauth_server/src/LoadResourceConfig.class.php');
 
 class oauthRS {
 
@@ -17,17 +15,25 @@ class oauthRS {
     protected $resource;
     protected $token;
     protected $person_id;
+    protected $config_dir;
 
-    public function __construct() {
-        $this->authservers = new AuthServerList();
+    public function __construct($dir= "") {
+        if(0==strcmp($dir, "")){
+            $this->config_dir = dirname(dirname(__FILE__)) . "/config/";
+        }else{
+            $this->config_dir = $dir;
+        }
+        $this->authservers = new AuthServerList($this->config_dir);
         $this->error = null;
-        $this->errors = new ErrorList();
+        $this->errors = new ErrorList($this->config_dir);
         $this->debug_active = true;
         $this->scope = null;
         $this->extra = array();
         $this->token = null;
         $this->person_id = "";
         $this->resource = null;
+       
+      
     }
 
     private function error($string) {
@@ -251,12 +257,11 @@ class oauthRS {
      */
     private function createResource() {
         $this->error("createResource");
-        $conf = new LoadResourceConfig();
+        $conf = new LoadResourceConfig($this->config_dir);
         if ($conf->hasClass($this->scope)) {
             $class = $conf->getClass($this->scope);
             if ($conf->hasArchiveName($this->scope)) {
-                $class_arch_name = $conf->getArchiveName($this->scope);
-                include_once dirname(__FILE__) . "/resources/" . $class_arch_name;
+                include_once $conf->getArchiveName($this->scope);
                 $reflect = new ReflectionClass($class);
                 $this->resource = $reflect->newInstance();
             } else {

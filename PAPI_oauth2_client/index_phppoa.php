@@ -3,14 +3,14 @@
 /**
  * @package oauth_client
  */
-include_once 'src/utils/papiUtils.php';
-include_once 'src/OAuth.class.php';
+include_once 'utils/papiUtils.php';
+include_once 'oauth_client/src/OAuth.class.php';
 
 $assertion = $_SESSION['userdata'];
 if ($assertion['PAPIAuthValue'] == 0 || !isset($_REQUEST['selector_name'])) {
     $content = "<div class='error'>Usuario no autorizado.</div>";
 } else {
-    $client = new OAuth();
+    $client = new OAuth(dirname(__FILE__)."/own_config/clientConfig.xml");
     $oauth_as = "https://oauth-server.rediris.es/oauth2lib_svn/oauth2lib/trunk/oauth_as/tokenEndpoint.php";
     $oauth_rs = "https://oauth-server.rediris.es/oauth2lib_svn/oauth2lib/trunk//oauth_server/serverEndpoint.php";
     $client->setAs($oauth_as);

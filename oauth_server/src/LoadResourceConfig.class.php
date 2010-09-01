@@ -7,12 +7,14 @@ class LoadResourceConfig {
     protected $classes;
     protected $archive_names;
 
-    public function __construct($file="") {
+    public function __construct($dir="") {
         $this->classes = array();
         $this->archive_names = array();
-         if ($file == '') {
-             $file = dirname(dirname(__FILE__)) . "/config/resourceClasses.xml";
-         }
+        if ($dir == '') {
+            $file = dirname(dirname(__FILE__)) . "/config/resourceClasses.xml";
+        } else {
+            $file = $dir . "resourceClasses.xml";
+        }    
         $this->loadFile($file);
     }
 
@@ -23,8 +25,8 @@ class LoadResourceConfig {
                            $id = (String) $child['id'];
                         if(isset($child->ResourceClass))
                              $this->classes[$id] = (String) $child->ResourceClass;
-                        if(isset($child->ResourceArchiveName))
-                              $this->archive_names[$id] = (String) $child->ResourceArchiveName;
+                        if(isset($child->ResourceFile))
+                              $this->archive_names[$id] = (String) $child->ResourceFile;
                    }
         } catch (Exception $exc) {
             header("HTTP/1.0 400 Bad Request");

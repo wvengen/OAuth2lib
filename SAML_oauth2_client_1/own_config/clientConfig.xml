@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAuthClient>
+    
+    <!--Authorization Server Configuration*-->
+    <AuthServerConfig>
+        <!-- Type of the assertion
+          SAML2 = "urn:oasis:names:tc:SAML:2.0:assertion";
+          PAPI = "urn:mace:rediris.es:papi";
+        -->
+        <AssertionType>urn:mace:rediris.es:papi</AssertionType>
+        <!--  The access grant type included in the request. In this library the type is "assertion". -->
+        <GrantType>assertion</GrantType>
+        <!-- Authorization Server URL.-->
+        <AuthServerURL>url_of_the_auth_server/oauth_as/tokenEndpoint.php</AuthServerURL>
+    </AuthServerConfig>
+
+ <!--Resource Server Configuration*-->
+    <ResServerConfig>
+        <!--Format of the resource request:
+            HEADER = "HTTP_Authorization_Header";
+            GET = "URI_Query_Parameter";
+            BODY = "Form-Encoded_Body_Parameter";
+        -->
+        <RequestType>HTTP_Authorization_Header</RequestType>
+        <!--Resource Server URL.-->
+        <ResServerURL>url_of_the_resource_server/oauth_server/serverEndpoint.php</ResServerURL>
+        <ResponseFormats>
+            <Scope id="http://www.rediris.es/sir/api/sps_available.php">
+                <FormatClass>DefaultFormattingResource</FormatClass>
+                <FormatFile>/Applications/MAMP/htdocs/oauth2lib_svn/oauth2lib/trunk/oauth_client/own_response_formats/DefaultFormattingResource.class.php</FormatFile>
+            </Scope>
+            <Scope id="http://oauth-server/photos/">
+                <FormatClass>PhotoFormattingResource</FormatClass>
+                <FormatFile>/Applications/MAMP/htdocs/oauth2lib_svn/oauth2lib/trunk/oauth_client/own_response_formats/PhotoFormattingResource.class.php</FormatFile>
+            </Scope>
+        </ResponseFormats>
+    </ResServerConfig>
+
+    
+ <!--Client App Configuration-->
+    <ClientConfig>
+        <ClientID>app_client_1</ClientID>
+        <ClientSecret>client_example_key</ClientSecret>
+        <!-- Error Response type. Defined by the constants HTML or JSON.. -->
+        <ErrorResponseType>HTML</ErrorResponseType>
+        <DefaultScope>http://www.rediris.es/sir/api/sps_available.php</DefaultScope>
+        <DebugActive>FALSE</DebugActive>
+    </ClientConfig>
+</OAuthClient>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

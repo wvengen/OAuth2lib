@@ -2,7 +2,7 @@
 /**
  * @package oauth_client
  */
-include_once 'src/utils/papiUtils.php';
+include_once 'utils/papiUtils.php';
 
 $assertion = $_SESSION['userdata'];
 if($assertion['PAPIAuthValue']==0) {
@@ -18,8 +18,8 @@ if($assertion['PAPIAuthValue']==0) {
         }
         $content .="or pertenecer a <b>'".$sho."'</b> puedes acceder a los siguientes servicios:";
             $content = '
-<form action="index_phppoa2.php" method="post">
-    <select id="selector" name="selector_name">        
+<form action="index_phppoa.php" method="post">
+    <select id="selector" name="selector_name">     
         <option value="2">SPs disponibles</option>
     </select>
     <input type="submit" value="Acceder a servicio"/>

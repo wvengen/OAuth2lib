@@ -1,5 +1,0 @@
-## person_id(scope) = resource_to_get
-
-elena = imgs/elena.png
-kan = imgs/kan.png 
-diego = imgs/diego.png

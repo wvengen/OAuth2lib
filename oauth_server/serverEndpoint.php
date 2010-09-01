@@ -1,9 +1,10 @@
 <?php
-require_once 'oauth_server/src/oauthRS.class.php';
-//require_once 'src/oauthRS.class.php';
+include_once 'oauth_server/src/oauthRS.class.php';
 /**
  * Request resource Endpoint
  */
-$rs = new oauthRS();
+//TODO: Change the location of your Server Configuration
+$config_dir = dirname(__FILE__)."/own_config/";
+$rs = new oauthRS($config_dir);
 $rs->manageRequest();
 ?>

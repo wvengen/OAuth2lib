@@ -5,7 +5,7 @@
  * @author Elena Lozano <elena.lozano@rediris.es>
  * @package oauth_client
  */
-include_once dirname(__FILE__) . '/IFormattingResource.interface.php';
+include_once ('oauth_client/src/response_formats/IFormattingResource.interface.php');
 
 class PhotoFormattingResource implements IFormattingResource {
 

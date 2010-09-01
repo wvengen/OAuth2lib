@@ -15,11 +15,13 @@ class saml2AssertionChecking implements IAssertionChecking {
      * Load the policies from a  given file.
      * @param <type> $rulesf The archive file with the policy.
      */
-    public function __construct($scope,$rulesf = "") {
+    public function __construct($scope,$dir = "") {
         $this->error = false;
         $this->scope = $this->cleanScope($scope);
-        if ( $rulesf == '' ) {
-             $rulesf = dirname(dirname(dirname(__FILE__))) . "/config/policies.xml";
+        if ($dir == '') {
+             $file = dirname(dirname(__FILE__)) . "/config/policies.xml";
+        }else{
+            $file = $dir."policies.xml";
         }
         if(0==sizeof($this->getPolicy($rulesf))) {
             error_log("ERROR EXTRAYENDO POLÍTICAS");

@@ -6,11 +6,13 @@ class ServerKeys {
     protected $keys;
     protected $debug_active;
 
-    public function __construct($file = '') {
+    public function __construct($dir = '') {
         $this->debug_active=true;
         $this->keys=array();
-        if ($file == '') {
+        if ($dir == '') {
              $file = dirname(dirname(__FILE__)) . "/config/serverKeys.xml";
+        }else{
+            $file = $dir."serverKeys.xml";
         }
         $this->loadKeys($file);
     }

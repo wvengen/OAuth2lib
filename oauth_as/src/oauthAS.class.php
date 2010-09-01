@@ -1,17 +1,15 @@
 <?php
-
 /**
  * OAuthAS
  * Class with the OAuth Authorization Server's logic
  * @author Elena Lozano <elena.lozano@rediris.es>
  * @package oauth_as
  */
-set_include_path(get_include_path().PATH_SEPARATOR.dirname(__FILE__));
-require_once('assertions/saml2AC.class.php');
-require_once('assertions/sirAC.class.php');
-require_once('ErrorList.class.php');
-require_once('ClientList.class.php');
-require_once('ServerKeys.class.php');
+include_once('oauth_as/src/assertions/saml2AC.class.php');
+include_once('oauth_as/src/assertions/sirAC.class.php');
+include_once('oauth_as/src/ErrorList.class.php');
+include_once('oauth_as/src/ClientList.class.php');
+include_once('oauth_as/src/ServerKeys.class.php');
 
 
 class oauthAS {
@@ -30,12 +28,18 @@ class oauthAS {
     protected $client_id;
     protected $access_token;
     protected $errors;
+    protected $config_dir;
 
-    public function __construct() {
-        $this->clients = new ClientList();
+    public function __construct($dir="") {
+        if(0==strcmp($dir, "")){
+            $this->config_dir = dirname(dirname(__FILE__)) . "/config/";
+        }else{
+            $this->config_dir = $dir;
+        }
+        $this->clients = new ClientList($this->config_dir);
         $this->error = null;
-        $this->errors = new ErrorList();
-        $this->servers = new ServerKeys();
+        $this->errors = new ErrorList($this->config_dir);
+        $this->servers = new ServerKeys($this->config_dir);
         $this->lifetime = 3600;
         $this->assertion_checking = null;
         $this->debug_active = true;
@@ -44,6 +48,8 @@ class oauthAS {
         $this->assertion_type = null;
         $this->scope = null;
         $this->access_token = null;
+     
+        
     }
 
     private function error($string) {
@@ -194,9 +200,9 @@ class oauthAS {
         $this->error("isValidAssertion");
         $res = false;
         if (strcmp(OAuthAS::SAML2, $this->assertion_type) == 0) {
-            $this->assertion_checking = new saml2AssertionChecking($this->cleanScope($this->scope));
+            $this->assertion_checking = new saml2AssertionChecking($this->cleanScope($this->scope),$this->config_dir);
         } else if (strcmp(OAuthAS::PAPI, $this->assertion_type) == 0) {
-            $this->assertion_checking = new sirAssertionChecking($this->cleanScope($this->scope));
+            $this->assertion_checking = new sirAssertionChecking($this->cleanScope($this->scope),$this->config_dir);
         }else{
             $this->error = "invalid_grant";
             return $res;
@@ -284,6 +290,16 @@ class oauthAS {
     public function getError() {
         return $this->error;
     }
+
+    public function getConfig_dir() {
+        return $this->config_dir;
+    }
+
+    public function setConfig_dir($config_dir) {
+        $this->config_dir = $config_dir;
+    }
+
+
 
 }
 ?>

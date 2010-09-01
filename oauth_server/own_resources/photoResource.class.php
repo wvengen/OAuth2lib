@@ -1,9 +1,9 @@
 <?php
-
 /**
  * Resource example class
  */
-require_once(dirname(__FILE__) . '/IServerResource.interface.php');
+include_once('oauth_server/src/resources/IServerResource.interface.php');
+
 class photoResource implements IServerResource {
     const SC = "http://oauth-server/photos/";
     protected $scopes;

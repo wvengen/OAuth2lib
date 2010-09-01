@@ -44,8 +44,8 @@ class LoadConfig {
                         $id = (String) $child['id'];
                         if(isset($child->FormatClass))
                         $this->format_classes[$id] = (String) $child->FormatClass;
-                        if(isset($child->FormatArchiveName))
-                        $this->format_archive_names[$id] = (String) $child->FormatArchiveName;
+                        if(isset($child->FormatFile))
+                        $this->format_archive_names[$id] = (String) $child->FormatFile;
                 }
             }
             $this->scope = (String) $xml->ClientConfig->DefaultScope;
