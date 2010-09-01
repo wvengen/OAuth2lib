@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssertionList>
+    <Assertion type="saml2">
+        <Policies>
+            <Policy>
+               <!-- <Attributes check="all" >
+                    <Attribute name="urn:mace:dir:attribute-def:eduPersonScopedAffiliation" value="staff@rediris.es" />
+                </Attributes>-->
+            </Policy>
+            <!--   <Policy>
+                <Attributes check="any" >
+                    <Attribute name="issuer" value="rediris.es" />
+                    <Attribute name="issuer" value="fecyt.es" />
+                </Attributes>
+            </Policy>
+            -->
+        </Policies>
+    </Assertion>
+
+    <Assertion type="papi">
+        <Policies scope="http://www.rediris.es/sir/api/sps_available.php">
+            <Policy>
+                <Attributes check="all" >
+                    <Attribute name="ePA" value="staff" />
+                     <!--<Attribute name="ePE" value="urn:mace:dir:entitlement:common-lib-terms"/>-->
+                </Attributes>
+            </Policy>
+            <Policy>
+                <Attributes check="any" >
+                    <!--<Attribute name="sHO" value="rediris.es" />
+                    <Attribute name="sHO" value="fecyt.es" />-->
+                </Attributes>
+            </Policy>
+        </Policies>
+        <Policies scope="http://oauth-server/photos/">
+            <Policy>
+                <Attributes check="all" >
+                    <Attribute name="ePA" value="staff" />
+                    <!-- <Attribute name="ePE" value="urn:mace:dir:entitlement:common-lib-terms"/>-->
+                </Attributes>
+            </Policy>
+            <Policy>
+                <Attributes check="any" >
+                    <!--<Attribute name="sHO" value="rediris.es" />
+                    <Attribute name="sHO" value="fecyt.es" />-->
+                </Attributes>
+            </Policy>
+        </Policies>
+    </Assertion>
+</AssertionList>
