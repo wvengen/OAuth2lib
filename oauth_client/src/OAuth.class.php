@@ -44,9 +44,11 @@ class OAuth {
      * @param <String> $clientid
      * @param <String> $clientsecret 
      */
-    public function __construct($file = "") {
-        if ($file == ''){
+    public function __construct($dir = "") {
+        if ($dir == ''){
              $file = dirname(dirname(__FILE__)) . '/config/clientConfig.xml';
+         }else{
+             $file = $dir.'/clientConfig.xml';
          }
 
         $this->error = null;

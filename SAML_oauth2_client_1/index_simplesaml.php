@@ -19,7 +19,7 @@ if($assertion=="") {
 }else{
         $sho =$assertion['urn:mace:dir:attribute-def:eduPersonScopedAffiliation'][0];
         $content .="<p>Por pertenecer a <b>'".$sho."'</b> puedes acceder a los siguientes servicios:";
-        $client = new OAuth(dirname(__FILE__)."/own_config/clientConfig.xml");
+        $client = new OAuth(dirname(__FILE__)."/own_config");
         $oauth_as="https://oauth-server.rediris.es/oauth2_09/oauth_as/tokenEndpoint.php";
         $oauth_rs="https://oauth-server.rediris.es/oauth2_09/oauth_server/serverEndpoint.php";
         $client->setAs($oauth_as);
