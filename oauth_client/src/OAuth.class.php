@@ -48,7 +48,7 @@ class OAuth {
         if ($dir == ''){
              $file = dirname(dirname(__FILE__)) . '/config/clientConfig.xml';
          }else{
-             $file = $dir.'/clientConfig.xml';
+             $file = $dir.'clientConfig.xml';
          }
 
         $this->error = null;
