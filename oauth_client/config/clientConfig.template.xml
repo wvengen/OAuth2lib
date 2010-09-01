@@ -27,11 +27,11 @@
         <ResponseFormats>
             <Scope id="http://www.rediris.es/sir/api/sps_available.php">
                 <FormatClass>DefaultFormattingResource</FormatClass>
-                <FormatFile>DefaultFormattingResource.class.php</FormatFile>
+                <FormatFile>/url/DefaultFormattingResource.class.php</FormatFile>
             </Scope>
             <Scope id="http://oauth-server/photos/">
                 <FormatClass>PhotoFormattingResource</FormatClass>
-                <FormatFile>PhotoFormattingResource.class.php</FormatFile>
+                <FormatFile>/url/PhotoFormattingResource.class.php</FormatFile>
             </Scope>
         </ResponseFormats>
     </ResServerConfig>
