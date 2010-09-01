@@ -17,6 +17,7 @@ if ($assertion['PAPIAuthValue'] == 0 || !isset($_REQUEST['selector_name'])) {
     $client->setRs($oauth_rs);
     $scope = "http://www.rediris.es/sir/api/sps_available.php"."?sho=".$assertion['sHO'];
     $client->setScope($scope);
+    $client->setBODYResourceRequest();
     $res = $client->doOAuthFlow($assertion);
     if (!$res) {
         $content =$client->getError();

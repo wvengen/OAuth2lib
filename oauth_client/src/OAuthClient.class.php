@@ -387,8 +387,10 @@ class OAuthClient {
         $st="";
         $pattern = '/\{"(.*)\"}/';
         preg_match_all($pattern, $string, $matches);
-        if ($matches[0][0]!=null && $matches[0][0]!="" ) {
-            $st = $matches[0][0];
+        if(isset($matches[0][0])){
+           if ($matches[0][0]!=null && $matches[0][0]!="" ) {
+              $st = $matches[0][0];
+           }
         } else {
         	$pattern2= '/Content-Language: es\\r\\n\\r\\n(.*)/';
         	preg_match_all($pattern2,$string,$matches2);
