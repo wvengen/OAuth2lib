@@ -34,7 +34,11 @@ class oauthAS {
         if(0==strcmp($dir, "")){
             $this->config_dir = dirname(dirname(__FILE__)) . "/config/";
         }else{
-            $this->config_dir = $dir;
+           $this->config_dir = $dir;
+           $last_char = substr($dir,strlen($dir)-1);
+           if(strcmp("/",$last_char)!=0){
+                 $this->config_dir .="/";
+            }
         }
         $this->clients = new ClientList($this->config_dir);
         $this->error = null;

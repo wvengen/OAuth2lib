@@ -48,6 +48,10 @@ class OAuth {
         if ($dir == ''){
              $file = dirname(dirname(__FILE__)) . '/config/clientConfig.xml';
          }else{
+            $last_char = substr($dir,strlen($dir)-1);
+            if(strcmp("/",$last_char)!=0){
+                 $dir .= "/";
+            }
              $file = $dir.'clientConfig.xml';
          }
 

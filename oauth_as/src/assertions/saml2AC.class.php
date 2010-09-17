@@ -23,7 +23,7 @@ class saml2AssertionChecking implements IAssertionChecking {
         }else{
             $file = $dir."policies.xml";
         }
-        if(0==sizeof($this->getPolicy($rulesf))) {
+        if(0==sizeof($this->getPolicy($file))) {
             error_log("ERROR EXTRAYENDO POLÍTICAS");
             $this->error = true;
         }
