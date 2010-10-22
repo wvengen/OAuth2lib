@@ -53,10 +53,18 @@ class sirAssertionChecking implements IAssertionChecking {
         $this->assertion = $assertion;
         $dev = false;
         if ($this->matchRules() != false) {
-            if (isset($this->assertion['uid'])) {
+            if (isset($this->assertion['uid'])) {				
                 $this->personId = $this->assertion['uid'];
                 $dev = true;
-            }
+            }else{
+				if (isset($this->assertion['sPUC'])) {				
+	                $this->personId = $this->assertion['sPUC'];
+	                $dev = true;
+				}else if(isset($this->assertion['ePTI']) && isset($this->assertion['sHO']) ){
+					$this->personId = $this->assertion['ePTI']."@".$this->assertion['sHO'];
+	                $dev = true;
+				}
+			}
         }
         return $dev;
     }

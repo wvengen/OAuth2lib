@@ -385,7 +385,7 @@ class OAuthClient {
         private function cleanHeader($string) {
  	   $this->error("Clean Header: ");
         $st="";
-        $pattern = '/\{"(.*)\"}/';
+		$pattern = '/\{(.*)\}/';
         preg_match_all($pattern, $string, $matches);
         if(isset($matches[0][0])){
            if ($matches[0][0]!=null && $matches[0][0]!="" ) {

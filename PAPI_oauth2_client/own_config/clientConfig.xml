@@ -27,11 +27,11 @@
         <ResponseFormats>
             <Scope id="http://www.rediris.es/sir/api/sps_available.php">
                 <FormatClass>DefaultFormattingResource</FormatClass>
-                <FormatFile>oauth2lib_svn/oauth2lib/trunk/PAPI_oauth2_client/own_response_formats/DefaultFormattingResource.class.php</FormatFile>
+                <FormatFile>/Applications/MAMP/htdocs/oauth2lib_svn/oauth2lib/trunk/PAPI_oauth2_client/own_response_formats/DefaultFormattingResource.class.php</FormatFile>
             </Scope>
             <Scope id="http://oauth-server/photos/">
                 <FormatClass>PhotoFormattingResource</FormatClass>
-                <FormatFile>oauth2lib_svn/oauth2lib/trunk/PAPI_oauth2_client/own_response_formats/PhotoFormattingResource.class.php</FormatFile>
+                <FormatFile>/Applications/MAMP/htdocs/oauth2lib_svn/oauth2lib/trunk/PAPI_oauth2_client/own_response_formats/PhotoFormattingResource.class.php</FormatFile>
             </Scope>
         </ResponseFormats>
     </ResServerConfig>
@@ -47,19 +47,3 @@
         <DebugActive>FALSE</DebugActive>
     </ClientConfig>
 </OAuthClient>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
