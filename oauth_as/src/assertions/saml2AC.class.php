@@ -8,7 +8,7 @@ require_once 'policy.class.php';
 class saml2AssertionChecking implements IAssertionChecking {
     private $assertion;
     private $policy;
-    private $personId;
+    private $tokenInfo;
     private $error;
     private $scope;
     /**
@@ -97,9 +97,9 @@ class saml2AssertionChecking implements IAssertionChecking {
      * Person Id getter
      * @return String: The personid.
      */
-    public function getPersonId() {
+    public function getTokenInfo() {
    //     error_log("saml2AssertionChecking.getPersonId");
-        return $this->personId;
+        return $this->tokenInfo;
     }  
 
     public function getError() {
