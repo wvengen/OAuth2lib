@@ -54,10 +54,10 @@ class OAuthClient {
      * @param <String> $grant_type The access grant type included in the request.
      * @return <bool> True if the request obtained an Access Token, false otherwise.
      */
-    public function doAccessTokenRequest($as, $scope, $assertion, $assertion_type, $grant_type="assertion") {
+    public function doAccessTokenRequest($as, $scope, $assertion, $assertion_type, $grant_type="assertion") {    
         $this->error("requestAccessToken");
         $dev = false;
-        if ($this->isntHTTPS($as)) {
+        if (!$this->isntHTTPS($as)) {
             $this->error = "The Auth Server connection must be over https";
         } else {
             if ($this->doATRequest($as, $this->generateATRequest($scope, $assertion, $assertion_type, $grant_type))) {
@@ -80,11 +80,20 @@ class OAuthClient {
         $aux = array();
         $aux['grant_type'] = $grant_type;
         $aux['assertion_type'] = $assertion_type;
-        $aux['assertion'] = $assertion;
+        //$aux['assertion'] = checkAssertionType($assertion_type ==  ? base64_encode(json_encode($assertion));
+        $aux['assertion'] = $this->checkAssertionType($assertion_type, $assertion);
         $aux['scope'] = $scope;
         $aux['client_id'] = $this->client_id;
         $aux['client_secret'] = $this->client_secret;
         return $aux;
+    }
+
+    private function checkAssertionType($assertion_type, $assertion){
+        if ($assertion_type == 'urn:oasis:names:tc:SAML:2.0:assertion')
+            $ass = base64_encode(json_encode($assertion));
+        elseif ($assertion_type == 'urn:mace:rediris.es:papi')
+            $ass = base64_encode(json_encode($assertion));        
+        return $ass;
     }
 
     /**
@@ -96,7 +105,7 @@ class OAuthClient {
      * @return <bool> True if the Auth server response has an access token
      */
     private function doATRequest($as, $request) {
-        $this->error("doATRequest");
+        $this->error("doATRequest");        
         $password = hash_hmac("sha256", $this->client_id, $this->client_secret);
         $opt = 'Authorization:  Basic ' . $password;
         $dev = false;
@@ -113,6 +122,7 @@ class OAuthClient {
             $this->error = "Curl error requesting the Access Token";
         } else {
             $info = curl_getinfo($ch);
+            file_put_contents('/Users/kurtiscobainis/Desktop/prueba.txt', $output, FILE_APPEND | LOCK_EX );
             $dev = $this->processAuthServerResponse($info, $output);
         }
         curl_close($ch);
@@ -154,13 +164,13 @@ class OAuthClient {
      * @param <String> $request_type it could be $GET, $HEADER or $BODY
      * @param <Array> $extra Extra parameters added in case of necessity. Initialized by default to null.
      */
-    public function requestResource($rs, $request_type, $extra=null) {
+    public function requestResource($rs, $request_type, $extra=null, $as=null) {
         $this->error("requestResource");
         $dev = false;
-        if ($this->isntHTTPS($rs)) {
+        if (!$this->isntHTTPS($rs)) {
             $this->error = "The Resource Server connection must be over https";
         } else {
-            if ($this->doResourceRequest($rs, $request_type, $this->generateResourceRequest($extra))) {
+            if ($this->doResourceRequest($rs, $request_type, $this->generateResourceRequest($extra, $as))) {
                 $dev = true;
             }
         }
@@ -172,10 +182,14 @@ class OAuthClient {
      * @param <Array> $extra Array with extra parameters
      * @return <Array>  Parameters of the request
      */
-    private function generateResourceRequest($extra) {
+    private function generateResourceRequest($extra, $as) {
         $this->error("generateResourceRequest");
         $aux = array();
-        $aux['token'] = $this->access_token;
+        if($this->access_token != NULL){
+            $aux['token'] = $this->access_token;
+        }else{
+            
+        }
         if ($extra != null) {
             $aux = array_merge($aux, $extra);
         }
@@ -246,6 +260,7 @@ class OAuthClient {
             $this->error = "Curl error requesting the resource";
         } else {
             $info = curl_getinfo($ch);
+            file_put_contents('/Users/kurtiscobainis/Desktop/prueba.txt', $output, FILE_APPEND | LOCK_EX );
             $dev = $this->processResServerResponse($info, $output);
         }
         curl_close($ch);
@@ -289,6 +304,7 @@ class OAuthClient {
             $this->error = "Curl error requesting the resource";
         } else {
             $info = curl_getinfo($ch);
+            file_put_contents('/Users/kurtiscobainis/Desktop/prueba.txt', $output, FILE_APPEND | LOCK_EX );
             $dev = $this->processResServerResponse($info, $output);
         }
         curl_close($ch);
@@ -334,6 +350,7 @@ class OAuthClient {
             $this->error = "Curl error requesting the resource";
         } else {
             $info = curl_getinfo($ch);
+            file_put_contents('/Users/kurtiscobainis/Desktop/prueba.txt', $output, FILE_APPEND | LOCK_EX );
             $dev = $this->processResServerResponse($info, $output);
         }
         curl_close($ch);

@@ -3,7 +3,8 @@
  * Class that permits to load the errors list.
  */
 class ServerKeys {
-    protected $keys;
+    public $keys;
+    public $id;
     protected $debug_active;
 
     public function __construct($dir = '') {
@@ -25,6 +26,10 @@ class ServerKeys {
     public function getKey($scope) {
         return $this->keys[$scope];
     }
+
+    public function getID(){
+        return $this->id;
+    }
     public function hasScope($scope) {
         return array_key_exists($scope, $this->keys)  && ($this->keys[$scope]!=null) && ($this->keys[$scope]!="") ;
     }
@@ -32,22 +37,25 @@ class ServerKeys {
     private function loadKeys($file) {
         $this->error("load keys");
         $xml = simplexml_load_file($file);
-        if(strcmp($xml->getName(),"ResourceServers")==0) {
-            foreach($xml->children() as $child) {
-                $key = $child->Key;               
-                if(null!=$child->Scopes->Scope){                     
-                    foreach($child->Scopes as $ch){                     
-                         foreach($ch->Scope as $scope){
-                             $this->setKey($scope, $key);
-                         }
+        if(strcmp($xml->getName(),"AuthServer")==0) {
+            $this->id = (string)$xml['id'];
+            if(strcmp($xml->children()->getName(),"ResourceServers")==0) {
+                foreach($xml->children()->children() as $child) {
+                    $key = $child->Key;
+                    if(null!=$child->Scopes->Scope){
+                        foreach($child->Scopes as $ch){
+                             foreach($ch->Scope as $scope){
+                                 $this->setKey($scope, $key);
+                             }
+                        }
                     }
-                }            
+                }
+            }else {
+                header("HTTP/1.0 400 Bad Request");
+                header("Content-Type: application/json");
+                header("Cache-control:no-store");
+                echo json_encode(array("error" => "Bad format of ASConfig.xml"));
             }
-        }else {
-            header("HTTP/1.0 400 Bad Request");
-            header("Content-Type: application/json");
-            header("Cache-control:no-store");
-            echo json_encode(array("error" => "Bad format of ASConfig.xml"));
         }
     }
 
@@ -55,4 +63,11 @@ class ServerKeys {
         $this->keys[(String)$scope] = (String)$key;
     }
 }
+
+$var = new ServerKeys();
+
+//echo '<pre>';
+//print_r($var->id);
+//echo'</pre>';
+
 ?>

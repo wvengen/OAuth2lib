@@ -1,0 +1,32 @@
+<OAuthClient>
+    <AuthServerConfig>
+        <AssertionType>urn:mace:rediris.es:papi</AssertionType>
+        <!-- <AssertionType>urn:oasis:names:tc:SAML:2.0:assertion</AssertionType> -->
+        <!--  The access grant type included in the request. In this library the type is "assertion". -->
+        <GrantType>assertion</GrantType>
+        <!-- Authorization Server URL.-->
+        <AuthServerURL>http://kratos.rediris.es/~kurtiscobainis/html/oauth2libv13/trunk/oauth_as/tokenEndpoint.php</AuthServerURL>
+    </AuthServerConfig>
+    <ResServerConfig>
+        <!--Format of the resource request:
+            HEADER = "HTTP_Authorization_Header";
+            GET = "URI_Query_Parameter";
+            BODY = "Form-Encoded_Body_Parameter";
+        -->
+        <RequestType>HTTP_Authorization_Header</RequestType>
+        <ResServerURL>http://kratos.rediris.es/~kurtiscobainis/html/oauth2libv13/trunk/oauth_server/serverEndpoint.php</ResServerURL>
+        <ResponseFormats>
+            <Scope id="scope_de_prueba">
+                <FormatClass>FormattingResource</FormatClass>
+                <FormatFile>FormattingResource.template.class.php</FormatFile>
+            </Scope>
+        </ResponseFormats>
+    </ResServerConfig>
+    <ClientConfig>
+        <ClientID>prueba_oauth</ClientID>
+        <ClientSecret>clave_de_prueba_oauth</ClientSecret>
+        <ErrorResponseType>HTML</ErrorResponseType>
+        <DefaultScope>scope_de_prueba</DefaultScope>
+        <DebugActive>TRUE</DebugActive>
+    </ClientConfig>
+</OAuthClient>

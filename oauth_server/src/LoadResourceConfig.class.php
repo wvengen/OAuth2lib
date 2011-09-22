@@ -6,7 +6,7 @@
 class LoadResourceConfig {
     protected $classes;
     protected $archive_names;
-    protected $token_formats;
+    public $token_formats;
 
     public function __construct($dir="") {
         $this->classes = array();
@@ -22,20 +22,20 @@ class LoadResourceConfig {
 
     public function loadFile($file) {
         $xml = simplexml_load_file($file);
-        try {
-           foreach ($xml as $child) {
-                           $id = (String) $child['id'];
-                        if(isset($child->ResourceClass))
-                             $this->classes[$id] = (String) $child->ResourceClass;
-                        if(isset($child->ResourceFile))
-                              $this->archive_names[$id] = (String) $child->ResourceFile;
-                        if(isset($child->TokenFormat)){
-							foreach($child->TokenFormat->children() as $ch){
-								$this->token_formats[$id][] = trim((string)$ch,"%");
-							}
-						}
-                   }
-        } catch (Exception $exc) {
+        try{
+            foreach ($xml as $child) {
+                $id = (String) $child['id'];
+                if(isset($child->ResourceClass))
+                    $this->classes[$id] = (String) $child->ResourceClass;
+                if(isset($child->ResourceFile))
+                    $this->archive_names[$id] = (String) $child->ResourceFile;
+                if(isset($child->TokenFormat)){
+                    foreach($child->TokenFormat->children() as $ch){
+                        $this->token_formats[$id][] = trim((string)$ch,"%");
+                    }
+		}
+            }
+        }catch (Exception $exc) {
             header("HTTP/1.0 400 Bad Request");
             header("Content-Type: application/json");
             header("Cache-control:no-store");
@@ -68,4 +68,10 @@ class LoadResourceConfig {
 
 
 }
+
+//$var = new LoadResourceConfig();
+
+//echo '<pre>';
+//print_r($var->token_formats);
+//echo'</pre>';
 ?>

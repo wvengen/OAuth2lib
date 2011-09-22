@@ -6,6 +6,8 @@ include_once('LoadResourceConfig.class.php');
 
 include_once('ResServerJWT.php');
 
+include 'PoA.php';
+
 class oauthRS {
 
     protected $error;
@@ -58,16 +60,29 @@ class oauthRS {
      */
     public function manageRequest() {
         $this->error("manageRequest");
-        if ($this->isValidFormatRequest()) {    // autenticación(si viene el token en la petición) (pasarlo al phpPoA)
-            if ($this->isValidToken()) {        // autorización(si el token es válido) (pasarlo al phpPoA)
+        $poa = new PoA('sample_oauth', '/Users/kurtiscobainis/Sites/html/phpPoA-2.4/samples/PoA.conf.php');
+//        if ($this->isValidFormatRequest()) {    // autenticación(si viene el token en la petición) (pasarlo al phpPoA)
+//            if ($this->isValidToken()) {        // autorización(si el token es válido) (pasarlo al phpPoA)
+//                $this->manageRSResponse();
+//            } else {
+//                $this->manageRSErrorResponse();
+//            }
+//        }
+//        if ($this->error != null) {
+//            $this->manageRSErrorResponse();
+//        }
+        if($poa->authenticate()){
+            echo 'hola';
+            if($poa->isAuthorized($user, $attrs)){
                 $this->manageRSResponse();
-            } else {
+            }else{
                 $this->manageRSErrorResponse();
             }
         }
-        if ($this->error != null) {
+        if($this->error != null){
             $this->manageRSErrorResponse();
         }
+
     }
 
     /**
@@ -131,10 +146,10 @@ class oauthRS {
                     $filtro = '/(.*)="(.*?)"/';
                     foreach ($array as $value) {
                         if (1 == preg_match_all($filtro, $value, $out)) {
-                            array_push($this->extra, array($out[1][0] => $out[2][0]));                            
+                            array_push($this->extra, array($out[1][0] => $out[2][0]));
                         }
                     }
-                }                
+                }
                 if (isset($_REQUEST)) {
                     foreach ($_REQUEST as $id => $req) {
                         $this->extra[$id] = $req;
@@ -151,14 +166,14 @@ class oauthRS {
         return $dev;
     }
 
-    private function processScope($scope) {        
+    private function processScope($scope) {
         $s = explode("?", $scope);
         $this->scope = $s[0];
         if (isset($s[1])) {
             $atts = explode("&", $s[1]);
             foreach ($atts as $att) {
                 $aux = explode("=", $att);
-                $this->extra[$aux[0]] = $aux[1];                
+                $this->extra[$aux[0]] = $aux[1];
             }
         }
     }
@@ -169,19 +184,19 @@ class oauthRS {
      * Modified by LuiJa for oauth2lib v14
      */
     private function isValidToken() {
-        
+
         $res = true;
         $res_jwt = new ResServerJWT("/Users/kurtiscobainis/Sites/html/pruebas/gn3-sts.crt");
         $claims = $res_jwt->decode($this->token);
-        if (!$claims == NULL){           
+        if (!$claims == NULL){
             $this->token_info = $claims['token_info'];
-            $this->scope = $claims['scope'];            
+            $this->scope = $claims['scope'];
             $this->processScope($this->scope);
             $this->createResource($this->scope);
             //$info = $this->addTokenInfo($this->token_info);
             //$info = $this->token_info;
             //var_dump(microtime(true));
-            //var_dump($claims['exp']);            
+            //var_dump($claims['exp']);
             if(!$this->authservers->checkAuthzKey($claims['authzID'])){
                 $this->error = "Invalid AS key";
                 $res = false;
@@ -282,7 +297,7 @@ class oauthRS {
         $conf = new LoadResourceConfig($this->config_dir);
         if ($conf->hasClass($this->scope)) {
             $class = $conf->getClass($this->scope);
-            if ($conf->hasArchiveName($this->scope)) {         
+            if ($conf->hasArchiveName($this->scope)) {
                 include_once 'resources/' . $conf->getArchiveName($this->scope);
                 $reflect = new ReflectionClass($class);
                 $this->resource = $reflect->newInstance();
@@ -300,4 +315,9 @@ class oauthRS {
     }
 
 }
+
+$var = new oauthRS();
+
+$var->manageRequest();
+
 ?>

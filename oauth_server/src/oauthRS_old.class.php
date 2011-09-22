@@ -1,10 +1,8 @@
 <?php
 
-include_once('ErrorList.class.php');
-include_once('AuthServerList.class.php');
-include_once('LoadResourceConfig.class.php');
-
-include_once('ResServerJWT.php');
+include_once('oauth_server/src/ErrorList.class.php');
+include_once('oauth_server/src/AuthServerList.class.php');
+include_once('oauth_server/src/LoadResourceConfig.class.php');
 
 class oauthRS {
 
@@ -17,7 +15,7 @@ class oauthRS {
     protected $resource;
     protected $token;
     protected $token_info;
-    protected $token_format;
+        protected $token_format;
     protected $config_dir;
 
     public function __construct($dir= "") {
@@ -37,12 +35,11 @@ class oauthRS {
         $this->scope = null;
         $this->extra = array();
         $this->token = null;
-        //$this->token_info = "";
-        $this->token_info = array();
-        $this->token_format = array();
+        $this->token_info = "";
+        $this->token_format = "";
         $this->resource = null;
-
-
+       
+      
     }
 
     private function error($string) {
@@ -58,8 +55,8 @@ class oauthRS {
      */
     public function manageRequest() {
         $this->error("manageRequest");
-        if ($this->isValidFormatRequest()) {    // autenticación(si viene el token en la petición) (pasarlo al phpPoA)
-            if ($this->isValidToken()) {        // autorización(si el token es válido) (pasarlo al phpPoA)
+        if ($this->isValidFormatRequest()) {
+            if ($this->isValidToken()) {
                 $this->manageRSResponse();
             } else {
                 $this->manageRSErrorResponse();
@@ -118,23 +115,22 @@ class oauthRS {
     private function isValidFormatHeaderRequest($headers) {
         $this->error("isValidHeaderRequest");
         $dev = false;
-        //var_dump($headers);
         if (array_key_exists("Authorization", $headers)) {
             $value = $headers['Authorization'];
             $array = explode("OAuth ", $value);
             if (count($array) < 2) {
                 $this->error = "invalid_request";
             } else {
-                //$array = explode(",", $array[1]);
-                $this->token = $array[1]; //array[0];
+                $array = explode(",", $array[1]);
+                $this->token = $array[0];
                 if (count($array) > 1) {
                     $filtro = '/(.*)="(.*?)"/';
                     foreach ($array as $value) {
                         if (1 == preg_match_all($filtro, $value, $out)) {
-                            array_push($this->extra, array($out[1][0] => $out[2][0]));                            
+                            array_push($this->extra, array($out[1][0] => $out[2][0]));
                         }
                     }
-                }                
+                }
                 if (isset($_REQUEST)) {
                     foreach ($_REQUEST as $id => $req) {
                         $this->extra[$id] = $req;
@@ -151,14 +147,14 @@ class oauthRS {
         return $dev;
     }
 
-    private function processScope($scope) {        
+    private function processScope($scope) {
         $s = explode("?", $scope);
         $this->scope = $s[0];
         if (isset($s[1])) {
             $atts = explode("&", $s[1]);
             foreach ($atts as $att) {
                 $aux = explode("=", $att);
-                $this->extra[$aux[0]] = $aux[1];                
+                $this->extra[$aux[0]] = $aux[1];
             }
         }
     }
@@ -166,57 +162,54 @@ class oauthRS {
     /**
      * Function that checks if the token given in the request is a valid one.
      * @return <bool>  true if the token is a valid one
-     * Modified by LuiJa for oauth2lib v14
      */
     private function isValidToken() {
-        
-        $res = true;
-        $res_jwt = new ResServerJWT("/Users/kurtiscobainis/Sites/html/pruebas/gn3-sts.crt");
-        $claims = $res_jwt->decode($this->token);
-        if (!$claims == NULL){           
-            $this->token_info = $claims['token_info'];
-            $this->scope = $claims['scope'];            
+        $this->error("isValidToken");
+        $dev = false;
+        $array = explode(":", $this->token);
+        $digest = $array[0];
+        $token = $array[1] . ':' . $array[2] . ':' . $array[3] . ':'  . $array[4];
+        $id_client = base64_decode($array[1]);
+        if (!$this->authservers->checkTokenKey($token, $digest)) {
+            $this->error = "invalid_token";
+        } else {
+            $this->token_info = base64_decode($array[2]);
+            $this->scope = base64_decode($array[3]);
             $this->processScope($this->scope);
             $this->createResource($this->scope);
-            //$info = $this->addTokenInfo($this->token_info);
-            //$info = $this->token_info;
-            //var_dump(microtime(true));
-            //var_dump($claims['exp']);            
-            if(!$this->authservers->checkAuthzKey($claims['authzID'])){
-                $this->error = "Invalid AS key";
-                $res = false;
+            $info = $this->addTokenInfo($this->token_info);
+            if (null==$info) {
+                $this->error = "insufficient_scope";
+            } else {
+                $this->extra = array_merge($info, $this->extra);
+                $time = base64_decode($array[4]);
+                if (microtime(true) > $time) {
+                    $dev = true;
+                } else {
+                    $this->error = 'expired_token';
+                }
             }
-            if (!microtime(true) > $claims['exp']){
-                $this->error = 'expired_token';
-                $res = false;
-            }
-            //if (null==$info) {
-            if(count($this->token_format) != count($this->token_info)){
-                $this->error = "INSUFFICIENT_SCOPE";
-            }
-        }else
-            $res = false;
-        return $res;
+        }
+        return $dev;
     }
 
     /**
      * Function that checks if the scope included in the request is a valid one.
      * @param <type> $person_id
      * @return boolean
-     * Not in use at the moment
      */
     private function addTokenInfo($token_info) {
         $this->error('addTokenInfo');
-        $dev=null;
-        //$token_info_attrs = explode("&&",$this->token_info);
-        if(count($this->token_format) == count($token_info)){
-                $dev = array_combine($this->token_format, $token_info);
-        }
+        $dev=null;	
+        $token_info_attrs = explode("&&",$this->token_info);
+         if(count($this->token_format) == count($token_info_attrs)){
+                $dev = array_combine($this->token_format, $token_info_attrs);
+        }            
       //  $dev = $this->resource->checkScope($this->scope, $token_info);
         return $dev;
     }
 
-
+   
 
     /**
      * Function that manage a negative response.
@@ -268,7 +261,7 @@ class oauthRS {
                 echo $res;
             }
         } else {
-            $this->error = "own_invalid_token";
+            $this->error = "invalid_token";
             $this->manageRSErrorResponse();
         }
     }
@@ -282,8 +275,8 @@ class oauthRS {
         $conf = new LoadResourceConfig($this->config_dir);
         if ($conf->hasClass($this->scope)) {
             $class = $conf->getClass($this->scope);
-            if ($conf->hasArchiveName($this->scope)) {         
-                include_once 'resources/' . $conf->getArchiveName($this->scope);
+            if ($conf->hasArchiveName($this->scope)) {
+                include_once $conf->getArchiveName($this->scope);
                 $reflect = new ReflectionClass($class);
                 $this->resource = $reflect->newInstance();
                 if($conf->hasArchiveName($this->scope)){

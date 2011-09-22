@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Registered Auth Servers-->
+<AuthServers>
+    <AuthServer id="authserver_example" url="http://kratos.rediris.es/~kurtiscobainis/html/oauth2libv13/trunk/oauth_as/tokenEndpoint.php">
+        <Key>oauth_server_key</Key>
+    </AuthServer>    
+</AuthServers>

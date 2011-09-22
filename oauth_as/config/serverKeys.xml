@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <AuthServer id="authserver_example">
+     <ResourceServers>
+                <ResourceServer id="prueba_oauth">
+                    <Scopes>
+                        <!-- Added by LuiJa -->
+                        <Scope>scope_de_prueba</Scope>
+                    </Scopes>
+                    <Key>oauth_server_key</Key>
+                </ResourceServer>
+                <ResourceServer id="prueba_oauth2">
+                    <Scopes>
+                        <!-- Added by LuiJa -->
+                        <Scope>scope_de_prueba2</Scope>
+                    </Scopes>
+                    <Key>oauth_server_key2</Key>
+                </ResourceServer>
+                <ResourceServer id="prueba_oauth3">
+                    <Scopes>
+                        <!-- Added by LuiJa -->
+                        <Scope>scope_de_prueba3</Scope>
+                    </Scopes>
+                    <Key>oauth_server_key3</Key>
+                </ResourceServer>
+     </ResourceServers>
+ </AuthServer>
