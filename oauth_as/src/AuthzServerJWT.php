@@ -75,7 +75,7 @@ class AuthzServerJWT {
 }
 
 
-//$var = new AuthzServerJWT("/Users/kurtiscobainis/Sites/html/pruebas/mykey.pem");
+$var = new AuthzServerJWT("/Users/kurtiscobainis/Sites/html/pruebas/mykey.pem");
 //$jwt_encoded = $var->encode();
 //var_dump($jwt_encoded);
 
