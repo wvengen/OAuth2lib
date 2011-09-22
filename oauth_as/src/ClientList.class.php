@@ -3,7 +3,7 @@
  * Class that permits to load the Clients Configuration file.
  */
 class ClientConfiguration {
-    protected $clients;
+    private $clients;
     public function __construct($dir = "") {
         if ($dir == '') {
              $file = dirname(dirname(__FILE__)) . "/config/clientKeys.xml";
@@ -31,13 +31,11 @@ class ClientConfiguration {
 				$id = (string)$child['id'];
 				$key = (string)$child->Key;
 				$scopes = array();
-                                $var = 0;
 				foreach($child->AllowedScopes->children() as $scope){
 					$scope_id = (string)$scope['id'];
-					//$attributes = array();
-					$scopes[$var] = $scope_id;
-                                        $var++;
-					/*foreach($scope->AllowedAttributes->children() as $attrs){
+					$attributes = array();
+					$scopes[$scope_id] = array();
+					foreach($scope->AllowedAttributes->children() as $attrs){
 						$attr_name = (string)$attrs['name'];
 						$values = array();				
 						foreach($attrs->children() as $val){
@@ -49,8 +47,8 @@ class ClientConfiguration {
 							$values[$val_check] = $elems;							
 						}
 						$attributes[$attr_name] = $values;
-					}*/
-					//$scopes[$scope_id] = $attributes;
+					}
+					$scopes[$scope_id] = $attributes;		
 				}
 				$aux[$id] = array("Key"=>$key, "Scopes"=>$scopes);
 			}
@@ -72,13 +70,4 @@ class ClientConfiguration {
         $this->clients = $aux;
     }
 }
-
-
-
-//$client = new ClientConfiguration();
-//echo '<pre>';
-//print_r($client->clients);
-//echo '</pre>'
-
-
 ?>

@@ -6,8 +6,8 @@
  * @author Elena Lozano <elena.lozano@rediris.es>
  * @package oauth_client
  */
- include('OAuthClient.class.php');
- include('LoadConfig.class.php');
+ include('oauth_client/src/OAuthClient.class.php');
+ include('oauth_client/src//LoadConfig.class.php');
 
 class OAuth {
     const HEADER = "HTTP_Authorization_Header";
@@ -38,9 +38,6 @@ class OAuth {
     protected $rs;
     //LoadConfig
     protected $conf;
-    
-    //Added to separate the request of the access token from the request of the resource
-    protected $oauth_client;
 
     /**
      * Constructor
@@ -51,7 +48,11 @@ class OAuth {
         if ($dir == ''){
              $file = dirname(dirname(__FILE__)) . '/config/clientConfig.xml';
          }else{
-            $file = $dir;
+            $last_char = substr($dir,strlen($dir)-1);
+            if(strcmp("/",$last_char)!=0){
+                 $dir .= "/";
+            }
+             $file = $dir.'clientConfig.xml';
          }
 
         $this->error = null;
@@ -67,9 +68,6 @@ class OAuth {
         $this->rs = $this->conf->get_rs();
         $this->assertion_type =  $this->conf->get_assertion_type();
         $this->request_type =  $this->conf->get_request_type();
-        
-        
-        $this->oauth_client = new OAuthClient($this->client_id, $this->client_secret, true);
     }
 
     private function error($string) {
@@ -95,30 +93,8 @@ class OAuth {
             $this->resource = $this->returnResource($oauth);
             $dev = true;
         }
-        return $oauth;
-    }
-    
-    public function requestAccessTokenAS($assertion){
-        $this->error("requestAccessTokenAS");
-        //$oauth_client = new OAuthClient($this->client_id, $this->client_secret, true);
-        if (!$this->oauth_client->doAccessTokenRequest($this->as, $this->scope, $this->assertion, $this->assertion_type, $this->grant_type))
-                $this->error = $this->returnError($oauth_client);
-        return $oauth_client->getAccess_token();
-    }
-    
-    public function requestResourceRS($rs, $request_type){
-        $this->error("requestResourceRS");
-        $dev = false;
-        //$oauth_client = new OAuthClient($this->clientid, $this->clientsecret, true);
-        if(!$this->oauth_client->requestResource($this->rs, $this->request_type, $this->as)){
-                $this->error = $this->returnError($oauth_client);
-        }else{
-            $this->resource = $this->returnResource($oauth_client);
-            $dev = true;
-        }
         return $dev;
     }
-    
 
      private function cleanScope($scope){
         if(strpos($scope,"?")==0){
@@ -139,7 +115,7 @@ class OAuth {
         if ($this->conf->hasFormatClass($this->cleanScope($this->scope))) {
             $class = $this->conf->getFormatClass($this->cleanScope($this->scope));
             if ($this->conf->hasFormatArchiveName($this->cleanScope($this->scope))) {
-                include_once dirname(__FILE__)."/response_formats/".$this->conf->getFormatArchiveName($this->cleanScope($this->scope));
+                include_once $this->conf->getFormatArchiveName($this->cleanScope($this->scope));
                 $reflect = new ReflectionClass($class);
                 $string =  $reflect->newInstance()->formatResource($oauth->getResource());
             } else {
@@ -295,7 +271,4 @@ class OAuth {
     }
 
 }
-
-//$var = new OAuth();
-//$var2 = new oauthClient($var->client_id, $var->client_secret, true);
 ?>

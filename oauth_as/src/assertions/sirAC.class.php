@@ -8,8 +8,8 @@ require_once 'policy.class.php';
  */
 class sirAssertionChecking implements IAssertionChecking {
 
-    private $assertion;    
-    public $policy;
+    private $assertion;
+    private $policy;
     private $tokenInfo;
     private $error;
     private $scope;
@@ -24,8 +24,7 @@ class sirAssertionChecking implements IAssertionChecking {
         $this->scope = $this->cleanScope($scope);
         $this->policy = array();
         $this->tokenFormat = "%sho%";
-        //$this->tokenInfo = null;
-        $this->tokenInfo = array();
+         $this->tokenInfo = null;
         if ($dir == '') {
              $file = dirname(dirname(__FILE__)) . "/config/policies.xml";
         }else{
@@ -54,16 +53,14 @@ class sirAssertionChecking implements IAssertionChecking {
      * @return bool. True if the policy matches the assertion.
      */
     public function checkAssertion($userAssertion) {
-        /*$userAssertion = explode(",",$userAssertion);
-	$userAttrs = array();
-	foreach($userAssertion as $elem){
-            $aux = explode("=",$elem);
-            $userAttrs[$aux[0]] = $aux[1];
-	}*/
-        // hago uso del método del PoA getAttributes para obtener la aserción
-        // mandando la aserción como array en vez de como cadena
-        $this->assertion = $userAssertion;     
-        $dev = false;        
+			$userAssertion = explode(",",$userAssertion);
+			$userAttrs = array();
+			foreach($userAssertion as $elem){
+				$aux = explode("=",$elem);
+				$userAttrs[$aux[0]] = $aux[1];
+			}
+        $this->assertion = $userAttrs;
+        $dev = false;
         if ($this->matchRules() != false) {
             $this->tokenInfo = $this->generateTokenInfo();
             if($this->tokenInfo!=null){
@@ -74,29 +71,18 @@ class sirAssertionChecking implements IAssertionChecking {
     }
     //TODO: mover esta a función a policies
     private function generateTokenInfo(){
-//		$string_ret = null;
-//		foreach($this->tokenFormat->children() as $attribute){
-//			$att = trim($attribute,'%');
-//			if(array_key_exists($att, $this->assertion)){
-//                            if($string_ret != null)
-//                                $string_ret .= "&&";
-//                            $string_ret .= $this->assertion[$att];
-//                        }else if(0==strcmp($att,"scope")){
-//                            if($string_ret != null)
-//                                $string_ret .= "&&";
-//                            $string_ret .= $this->scope;
-//                        }
-//		}
-//        return $string_ret;
-        $array_ret = array();
-        foreach($this->tokenFormat->children() as $attribute){
-            $att = trim($attribute, '%');
-            if(array_key_exists($att, $this->assertion))
-                    $array_ret[$att] = $this->assertion[$att];
-            elseif(strcmp($att, 'scope') == 0)
-                    $array_ret['scope'] = $this->scope;
-        }
-        return $array_ret;
+		$string_ret = null;
+		foreach($this->tokenFormat->children() as $attribute){
+			$att = trim($attribute,'%');      
+			if(array_key_exists($att, $this->assertion)){
+                    if($string_ret != null) $string_ret .= "&&";
+                    $string_ret .= $this->assertion[$att];
+            }else if(0==strcmp($att,"scope")){
+                    if($string_ret != null) $string_ret .= "&&";
+                    $string_ret .= $this->scope;
+            }
+		}       
+        return $string_ret;
     }
     
     /**
@@ -104,11 +90,11 @@ class sirAssertionChecking implements IAssertionChecking {
      * @param <type> $assertion
      * @return bool. True if the policy matches the assertion.
      */
-    protected function matchRules() {        
-        $dev = true;        
+    protected function matchRules() {
+        $dev = true;
         if (sizeof($this->policy) > 0) {
-            foreach ($this->policy as $pol) {                
-                $dev = $dev && $pol->checkPolicy($this->assertion, $this->assertion_type);
+            foreach ($this->policy as $pol) {
+                $dev = $dev && $pol->checkPolicy($this->assertion);
             }
         } else {
             $dev = false;
@@ -121,25 +107,22 @@ class sirAssertionChecking implements IAssertionChecking {
      * @param <type> $rulesfile File of the policy
      * @return AssertionPolicy. The Policy.
      */
-    public function getPolicy($rulesfile) {
+    protected function getPolicy($rulesfile) {
         $xml = simplexml_load_file($rulesfile);
         if (strcmp($xml->getName(), "AssertionList") == 0){
-            foreach ($xml->children() as $policy) {                
+            foreach ($xml->children() as $policy) {
                 if (0 == strcmp("papi", $policy['type'])){
                     foreach ($policy->children() as $pol) {
                         if (0 == strcmp($this->scope, $pol['scope'])){
                             $this->tokenFormat = $pol->TokenFormat;
                             foreach ($pol->Policy as $p) {
-                                //var_dump($p);
-                                //file_put_contents('/Users/kurtiscobainis/Desktop/prueba2.txt', $p . PHP_EOL, FILE_APPEND | LOCK_EX );
-                                $this->policy[] = new AssertionPolicy($p);                                
+                                $this->policy[] = new AssertionPolicy($p);
                             }
 						}
                     }
 				}
             }
 		}
-                
         return $this->policy;
     }
 

@@ -5,15 +5,11 @@
  * @author Elena Lozano <elena.lozano@rediris.es>
  * @package oauth_as
  */
-include_once('assertions/saml2AC.class.php');
-include_once('assertions/sirAC.class.php');
-include_once('ErrorList.class.php');
-include_once('ClientList.class.php');
-include_once('ServerKeys.class.php');
-
-// ************ JWT ************ //
-include_once('AuthzServerJWT.php');
-
+include_once('oauth_as/src/assertions/saml2AC.class.php');
+include_once('oauth_as/src/assertions/sirAC.class.php');
+include_once('oauth_as/src/ErrorList.class.php');
+include_once('oauth_as/src/ClientList.class.php');
+include_once('oauth_as/src/ServerKeys.class.php');
 
 
 class oauthAS {
@@ -56,8 +52,8 @@ class oauthAS {
         $this->assertion_type = null;
         $this->scope = null;
         $this->access_token = null;
-
-
+     
+        
     }
 
     private function error($string) {
@@ -104,7 +100,6 @@ class oauthAS {
      * @return <bool> True if it is a valid format, false otherwise.
      */
     private function isValidFormatRequest($search) {
-        
         $this->error("isValidFormatRequest");
         $res = false;
         if (is_array($search)
@@ -116,10 +111,8 @@ class oauthAS {
                 && ($search['assertion'] != "")
                 && array_key_exists("client_id", $search)
                 && ($search['client_id'] != "")) {
+            $this->assertion = $search['assertion'];
             $this->assertion_type = $search['assertion_type'];
-            //$this->assertion = $this->assertion_type == 'urn:mace:rediris.es:papi' ? $search['assertion'] : json_decode(base64_decode($search['assertion']),true);
-            $this->assertion = $this->checkAssertionType($this->assertion_type, $search['assertion']);
-            //var_dump($this->assertion);
             $this->client_id = $search['client_id'];
             if (array_key_exists("scope", $search)) {
                 $this->scope = $search['scope'];
@@ -132,14 +125,6 @@ class oauthAS {
             $this->error = "invalid_request";
         }
         return $res;
-    }
-
-    private function checkAssertionType($assertion_type, $assertion){
-        if($assertion_type == 'urn:oasis:names:tc:SAML:2.0:assertion')
-            $ass = json_decode(base64_decode ($assertion), true);
-        elseif($assertion_type == 'urn:mace:rediris.es:papi')
-            $ass = json_decode(base64_decode ($assertion), true);
-        return $ass;
     }
 
     /**
@@ -181,7 +166,7 @@ class oauthAS {
         if($pos===false){
             $res = $scope;
         }else{
-            $res =  substr($scope, 0,$pos);
+            $res =  substr($scope, 0,$pos);           
         }
         return $res;
     }
@@ -218,22 +203,20 @@ class oauthAS {
      * @return <bool> True if it is a valid one, false otherwise
      */
     private function isValidAssertion() {
-        $this->error("isValidAssertion");        
+        $this->error("isValidAssertion");
         $res = false;
-        $var = 123;
-        if (strcmp(OAuthAS::SAML2, $this->assertion_type) == 0) {                        
+        if (strcmp(OAuthAS::SAML2, $this->assertion_type) == 0) {
             $this->assertion_checking = new saml2AssertionChecking($this->cleanScope($this->scope),$this->config_dir);
-        } else if (strcmp(OAuthAS::PAPI, $this->assertion_type) == 0) {            
-            $this->assertion_checking = new sirAssertionChecking($this->cleanScope($this->scope),$this->config_dir);            
+        } else if (strcmp(OAuthAS::PAPI, $this->assertion_type) == 0) {
+            $this->assertion_checking = new sirAssertionChecking($this->cleanScope($this->scope),$this->config_dir);
         }else{
             $this->error = "invalid_grant";
             return $res;
         }
-        //var_dump($this->assertion);
        if ($this->assertion_checking->checkAssertion($this->assertion)) {
             $res = true;
         }
-        if (!$res) {                      
+        if (!$res) {
             $this->error = "invalid_grant";
         }
         return $res;
@@ -241,14 +224,19 @@ class oauthAS {
 
     /**
      * Function that generates an access token from the parameters.
-     * Modified by LuiJa for oauth2lib v14
      */
     private function generateAccessToken() {
         $this->error("generateAccessToken");
-        $serverID_encoded = hash_hmac('sha256', $this->servers->getID(), $this->servers->getKey($this->scope));
-        $jwt = new AuthzServerJWT("/Users/kurtiscobainis/Sites/html/pruebas/gn3-sts.key");        
-        $jwt_encoded = $jwt->encode($this->client_id, $this->assertion_checking->getTokenInfo(), $this->scope, $this->servers->getID(), $serverID_encoded);
-        $this->access_token = $jwt_encoded;
+        $key = $this->clients->getSecret($this->client_id);
+        //1 microsecond = 1.0 × 10-6 seconds
+        $change = 0.000001;
+        $time = microtime(true) + $this->lifetime*$change;
+        $message = base64_encode($this->client_id) . ":"
+                . base64_encode($this->assertion_checking->getTokenInfo()) . ":"
+                        . base64_encode($this->scope).  ":"
+                                . base64_encode($time);
+        $token = hash_hmac("sha256", $message, $this->servers->getKey($this->cleanScope($this->scope))) . ":" . $message;
+        $this->access_token = $token;
     }
 
     /**
@@ -265,10 +253,10 @@ class oauthAS {
         header("Cache-control:no-store");
         $response = array();
         $response['access_token'] = $this->access_token;
-//        $response['expires_in'] = $this->lifetime;
-//        if ($this->scope != null && $this->scope != "") {
-//            $response['scope'] = $this->scope;
-//        }
+        $response['expires_in'] = $this->lifetime;
+        if ($this->scope != null && $this->scope != "") {
+            $response['scope'] = $this->scope;
+        }
         echo json_encode($response);
     }
 
@@ -318,19 +306,13 @@ class oauthAS {
     }
 
     private function setLogMsg(){
-        /*$file = fopen("oauth_access.log", "a");
+        $file = fopen("oauth_access.log", "a");
         $string = "Token Request";
         $array = array("client_id"=>$this->client_id, "scope"=>$this->scope, "date"=>date(DATE_RFC822), "assertion"=>  serialize($this->assertion));
         $string.= ": ".json_encode($array)."\n";
         fwrite($file, $string);
-        */
     }
 
 
 }
-
-//$jwt = new AuthzServerJWT('file://./mykey.pem');
-//        $jwt_encoded = $jwt->encode();
-//        var_dump($jwt_encoded);
-
 ?>
