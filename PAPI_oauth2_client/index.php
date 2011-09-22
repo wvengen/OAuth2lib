@@ -3,6 +3,7 @@
  * @package oauth_client
  */
 include_once 'utils/papiUtils.php';
+
 $assertion = $_SESSION['userdata'];
 if($assertion['PAPIAuthValue']==0) {
         $content="<div class='error'>Usuario no autorizado.</div>";

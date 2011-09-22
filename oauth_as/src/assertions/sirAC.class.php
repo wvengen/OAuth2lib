@@ -10,10 +10,9 @@ class sirAssertionChecking implements IAssertionChecking {
 
     private $assertion;
     private $policy;
-    private $tokenInfo;
+    private $personId;
     private $error;
     private $scope;
-    private $tokenFormat;
 
     /**
      * Load the policies from a  given file.
@@ -23,8 +22,6 @@ class sirAssertionChecking implements IAssertionChecking {
         $this->error = false;
         $this->scope = $this->cleanScope($scope);
         $this->policy = array();
-        $this->tokenFormat = "%sho%";
-         $this->tokenInfo = null;
         if ($dir == '') {
              $file = dirname(dirname(__FILE__)) . "/config/policies.xml";
         }else{
@@ -52,39 +49,26 @@ class sirAssertionChecking implements IAssertionChecking {
      * @param array $assertion Assertion to check
      * @return bool. True if the policy matches the assertion.
      */
-    public function checkAssertion($userAssertion) {
-			$userAssertion = explode(",",$userAssertion);
-			$userAttrs = array();
-			foreach($userAssertion as $elem){
-				$aux = explode("=",$elem);
-				$userAttrs[$aux[0]] = $aux[1];
-			}
-        $this->assertion = $userAttrs;
+    public function checkAssertion($assertion) {
+        $this->assertion = $assertion;
         $dev = false;
         if ($this->matchRules() != false) {
-            $this->tokenInfo = $this->generateTokenInfo();
-            if($this->tokenInfo!=null){
+            if (isset($this->assertion['uid'])) {				
+                $this->personId = $this->assertion['uid'];
                 $dev = true;
-            }
+            }else{
+				if (isset($this->assertion['sPUC'])) {				
+	                $this->personId = $this->assertion['sPUC'];
+	                $dev = true;
+				}else if(isset($this->assertion['ePTI']) && isset($this->assertion['sHO']) ){
+					$this->personId = $this->assertion['ePTI']."@".$this->assertion['sHO'];
+	                $dev = true;
+				}
+			}
         }
         return $dev;
     }
-    //TODO: mover esta a función a policies
-    private function generateTokenInfo(){
-		$string_ret = null;
-		foreach($this->tokenFormat->children() as $attribute){
-			$att = trim($attribute,'%');      
-			if(array_key_exists($att, $this->assertion)){
-                    if($string_ret != null) $string_ret .= "&&";
-                    $string_ret .= $this->assertion[$att];
-            }else if(0==strcmp($att,"scope")){
-                    if($string_ret != null) $string_ret .= "&&";
-                    $string_ret .= $this->scope;
-            }
-		}       
-        return $string_ret;
-    }
-    
+
     /**
      * Function that decides if the assertion matches the policy,
      * @param <type> $assertion
@@ -109,53 +93,25 @@ class sirAssertionChecking implements IAssertionChecking {
      */
     protected function getPolicy($rulesfile) {
         $xml = simplexml_load_file($rulesfile);
-        if (strcmp($xml->getName(), "AssertionList") == 0){
+        if (strcmp($xml->getName(), "AssertionList") == 0)
             foreach ($xml->children() as $policy) {
-                if (0 == strcmp("papi", $policy['type'])){
+                if (0 == strcmp("papi", $policy['type']))
                     foreach ($policy->children() as $pol) {
-                        if (0 == strcmp($this->scope, $pol['scope'])){
-                            $this->tokenFormat = $pol->TokenFormat;
+                        if (0 == strcmp($this->scope, $pol['scope']))
                             foreach ($pol->Policy as $p) {
                                 $this->policy[] = new AssertionPolicy($p);
                             }
-						}
                     }
-				}
             }
-		}
         return $this->policy;
     }
-
-/*
-<Assertion type="papi">
-    <Policies scope="http://www.rediris.es/sir/api/sps_available.php">
-           <!-- %sHO% | %sPUC% | %ePTI% | %mail% | %uid%| %scope% -->
-        <TokenFormat>
-			<format>%sHO%</format>
-			<format>%scope%</format>
-		</TokenFormat>
-        <Policy>
-            <Attributes check="all" >
-                <Attribute name="ePA" value="staff" />
-                 <!--<Attribute name="ePE" value="urn:mace:dir:entitlement:common-lib-terms"/>-->
-            </Attributes>
-        </Policy>
-        <Policy>
-            <Attributes check="any" >
-                <Attribute name="sHO" value="rediris.es" />
-                <Attribute name="sHO" value="fecyt.es" />
-            </Attributes>
-        </Policy>
-    </Policies>
-
-*/
 
     /**
      * Person Id getter
      * @return String: The scope.
      */
-    public function  getTokenInfo() {
-        return $this->tokenInfo;
+    public function getPersonId() {
+        return $this->personId;
     }
 
     public function getError() {

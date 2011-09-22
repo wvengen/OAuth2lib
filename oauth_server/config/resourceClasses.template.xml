@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <Resources>
             <Scope id="http://www.rediris.es/sir/api/sps_available.php">
-                 <!-- %sHO% | %sPUC% | %ePTI% | %mail% | %uid%| %scope% -->
-                <TokenFormat>
-					<format>%sHO%</format>
-					<format>%scope%</format>
-				</TokenFormat>
                 <ResourceClass>Resource</ResourceClass>
                 <ResourceFile>/url/Resource.class.php</ResourceFile>
             </Scope>
             <Scope id="http://oauth-server/photos/">
-                 <!-- %sHO% | %sPUC% | %ePTI% | %mail% | %uid%| %scope% -->
-                <TokenFormat>
-					<format>%sHO%</format>
-					<format>%scope%</format>
-				</TokenFormat>
                 <ResourceClass>photoResource</ResourceClass>
                 <ResourceFile>/url/photoResource.class.php</ResourceFile>
             </Scope>

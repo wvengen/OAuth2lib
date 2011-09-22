@@ -40,7 +40,7 @@ class oauthAS {
                  $this->config_dir .="/";
             }
         }
-        $this->clients = new ClientConfiguration($this->config_dir);
+        $this->clients = new ClientList($this->config_dir);
         $this->error = null;
         $this->errors = new ErrorList($this->config_dir);
         $this->servers = new ServerKeys($this->config_dir);
@@ -84,7 +84,6 @@ class oauthAS {
                     if ($this->isValidAssertion()) {
                         $this->generateAccessToken();
                         $this->manageASResponse();
-                        $this->setLogMsg();
                     }
                 }
             }
@@ -111,7 +110,7 @@ class oauthAS {
                 && ($search['assertion'] != "")
                 && array_key_exists("client_id", $search)
                 && ($search['client_id'] != "")) {
-            $this->assertion = $search['assertion'];
+            $this->assertion = $this->transformArray(json_decode(urldecode($search['assertion'])));
             $this->assertion_type = $search['assertion_type'];
             $this->client_id = $search['client_id'];
             if (array_key_exists("scope", $search)) {
@@ -162,11 +161,10 @@ class oauthAS {
     }
 
   private function cleanScope($scope){
-      $pos =strpos($scope,"?");
-        if($pos===false){
+        if(strpos($scope,"?")==0){
             $res = $scope;
         }else{
-            $res =  substr($scope, 0,$pos);           
+            $res =  substr($scope, 0, strpos($scope,"?"));
         }
         return $res;
     }
@@ -232,7 +230,7 @@ class oauthAS {
         $change = 0.000001;
         $time = microtime(true) + $this->lifetime*$change;
         $message = base64_encode($this->client_id) . ":"
-                . base64_encode($this->assertion_checking->getTokenInfo()) . ":"
+                . base64_encode($this->assertion_checking->getPersonId()) . ":"
                         . base64_encode($this->scope).  ":"
                                 . base64_encode($time);
         $token = hash_hmac("sha256", $message, $this->servers->getKey($this->cleanScope($this->scope))) . ":" . $message;
@@ -305,13 +303,6 @@ class oauthAS {
         $this->config_dir = $config_dir;
     }
 
-    private function setLogMsg(){
-        $file = fopen("oauth_access.log", "a");
-        $string = "Token Request";
-        $array = array("client_id"=>$this->client_id, "scope"=>$this->scope, "date"=>date(DATE_RFC822), "assertion"=>  serialize($this->assertion));
-        $string.= ": ".json_encode($array)."\n";
-        fwrite($file, $string);
-    }
 
 
 }

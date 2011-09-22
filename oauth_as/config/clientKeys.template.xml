@@ -1,38 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Clients>
-<Client id="app_client_1">
-	<Key>client_example_key</Key>
-	<AllowedScopes>		
-		 <Scope id="http://www.rediris.es/sir/api/sps_available.php">
-			<AllowedAttributes>
-				<Attribute name="sHO">
-					<Values check="all">
-						<Value>rediris.es</Value>
-					</Values>
-					<Values check="any">
-						<Value>otro1a</Value>
-					</Values>
-					<Values check="none">
-						<Value>otro1b</Value>
-					</Values>
-				</Attribute>
-			</AllowedAttributes>
-	     </Scope>		
-	  	<Scope id="scope2">
-			<AllowedAttributes>
-				<Attribute name="sHO2">
-					<Values check="all">
-						<Value>rediris.es2</Value>
-					</Values>
-					<Values check="any">
-						<Value>otro2a</Value>
-					</Values>
-					<Values check="none">
-						<Value>otro2b</Value>
-					</Values>
-				</Attribute>
-			</AllowedAttributes>
-	     </Scope>
-	</AllowedScopes>	
-</Client>	
-</Clients>
+<!--Client Keys configuration-->
+<Keys>
+<Key id="app_client_1" value="client_example_key"/>
+</Keys>

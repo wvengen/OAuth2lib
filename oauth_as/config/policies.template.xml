@@ -19,11 +19,6 @@
 
     <Assertion type="papi">
         <Policies scope="http://www.rediris.es/sir/api/sps_available.php">
-             <!-- %sHO% | %sPUC% | %ePTI% | %mail% | %uid%| %scope% -->
-            <TokenFormat>
-				<format>%sHO%</format>
-				<format>%scope%</format>
-			</TokenFormat>
             <Policy>
                 <Attributes check="all" >
                     <Attribute name="ePA" value="staff" />
@@ -38,11 +33,6 @@
             </Policy>
         </Policies>
         <Policies scope="http://oauth-server/photos/">
-             <!-- %sHO% | %sPUC% | %ePTI% | %mail% | %uid%| %scope% -->
-            <TokenFormat>
-				<format>%sHO%</format>
-				<format>%scope%</format>
-			</TokenFormat>ey
             <Policy>
                 <Attributes check="all" >
                     <Attribute name="ePA" value="staff" />

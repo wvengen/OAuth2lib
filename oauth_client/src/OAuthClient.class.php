@@ -80,7 +80,7 @@ class OAuthClient {
         $aux = array();
         $aux['grant_type'] = $grant_type;
         $aux['assertion_type'] = $assertion_type;
-        $aux['assertion'] = $assertion;
+        $aux['assertion'] = urlencode(json_encode($this->transformArray($assertion)));
         $aux['scope'] = $scope;
         $aux['client_id'] = $this->client_id;
         $aux['client_secret'] = $this->client_secret;
