@@ -3,9 +3,9 @@
     <Scope id="scope_de_prueba">
         <TokenFormat>
             <format>%sHO%</format>
-            <format>%mail%</format>            
+            <format>%mail%</format>
         </TokenFormat>
         <ResourceClass>Resource</ResourceClass>
         <ResourceFile>Resource.template.class.php</ResourceFile>
-    </Scope>    
+    </Scope>
 </Resources>

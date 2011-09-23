@@ -32,7 +32,7 @@ class GraphResource implements IServerResource {
     public function checkScope($scope, $person_id=null) {
         return true;
     }
-     
+
      public function hasHeader() {
         $dev = false;
         if (null!=$this->header) {
@@ -44,7 +44,7 @@ class GraphResource implements IServerResource {
         return $this->header;
     }
 
-  
+
   private function curlConnect($url) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

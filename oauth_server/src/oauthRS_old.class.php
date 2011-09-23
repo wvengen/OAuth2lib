@@ -38,8 +38,8 @@ class oauthRS {
         $this->token_info = "";
         $this->token_format = "";
         $this->resource = null;
-       
-      
+
+
     }
 
     private function error($string) {
@@ -200,16 +200,16 @@ class oauthRS {
      */
     private function addTokenInfo($token_info) {
         $this->error('addTokenInfo');
-        $dev=null;	
+        $dev=null;
         $token_info_attrs = explode("&&",$this->token_info);
          if(count($this->token_format) == count($token_info_attrs)){
                 $dev = array_combine($this->token_format, $token_info_attrs);
-        }            
+        }
       //  $dev = $this->resource->checkScope($this->scope, $token_info);
         return $dev;
     }
 
-   
+
 
     /**
      * Function that manage a negative response.

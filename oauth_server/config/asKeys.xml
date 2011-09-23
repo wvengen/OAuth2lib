@@ -3,5 +3,5 @@
 <AuthServers>
     <AuthServer id="authserver_example" url="http://kratos.rediris.es/~kurtiscobainis/html/oauth2libv13/trunk/oauth_as/tokenEndpoint.php">
         <Key>oauth_server_key</Key>
-    </AuthServer>    
+    </AuthServer>
 </AuthServers>

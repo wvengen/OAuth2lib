@@ -35,19 +35,20 @@ class AssertionPolicy {
     public function checkPolicy($userAttrs) {
         $matched = 0;
         foreach ($this->getAttributes() as $attr) {
-            $key = $attr[0];
-            $value = $attr[1];
+                $key = $attr[0];
+                $value = $attr[1];
             //Si existe ese param en las keys del array de la aserción
             if (in_array($key, array_keys($userAttrs))) {
                 if(is_array($userAttrs[$key])) {
-                    $matched += $this->checkMultipleAttributes($userAttrs[$key], $value);
+                        $matched += $this->checkMultipleAttributes($userAttrs[$key], $value);
                 }else{
-                    if (strcmp($value, $userAttrs[$key])==0) {
-                        $matched++;
+                        if (strcmp($value, $userAttrs[$key]) == 0)
+                            $matched++;
                     }
+
                 }
-            }
         }
+
         if (strcmp($this->conditionAttrs,"none")==0&&$matched==0) {
             return true;
         }
@@ -91,4 +92,8 @@ class AssertionPolicy {
         return $matched;
     }
 }
+
+$var = new AssertionPolicy();
+
+
 ?>

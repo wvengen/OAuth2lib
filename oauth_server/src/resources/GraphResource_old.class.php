@@ -27,7 +27,7 @@ class IdPGraphResource implements IServerResource {
         if (isset($extra['period'])) {
             $period = $extra['period'];
         } else {
-            $period = "daily";	
+            $period = "daily";
         }
 
         // set default geometry
@@ -44,7 +44,7 @@ class IdPGraphResource implements IServerResource {
         if (@$extra['idp'] == "AESIR") {
             $host = "AESIR";
         }
-	 
+
         switch ($period) {
             case "daily":
             $rrdopts = "&rrdopts=+-snow-118800+-enow-0";

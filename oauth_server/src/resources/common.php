@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Common functions for resources
 // Jaime Perez 20101022
 
@@ -90,11 +90,11 @@ function json_indent($json) {
     $newLine   = "\n";
 
     for($i = 0; $i <= $strLen; $i++) {
-        
+
         // Grab the next character in the string
         $char = substr($json, $i, 1);
-        
-        // If this character is the end of an element, 
+
+        // If this character is the end of an element,
         // output a new line and indent the next line
         if($char == '}' || $char == ']') {
             $result .= $newLine;
@@ -103,11 +103,11 @@ function json_indent($json) {
                 $result .= $indentStr;
             }
         }
-        
+
         // Add the character to the result string
         $result .= $char;
 
-        // If the last character was the beginning of an element, 
+        // If the last character was the beginning of an element,
         // output a new line and indent the next line
         if ($char == ',' || $char == '{' || $char == '[') {
             $result .= $newLine;

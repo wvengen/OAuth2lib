@@ -21,7 +21,7 @@ class photoResource implements IServerResource {
      * @param <Array> $extra Extra parameters
      * @return string Resource
      */
-    public function getResource($scope, $extra=null) {     
+    public function getResource($scope, $extra=null) {
         $this->person_id = $extra[0];
         $filename = dirname(__FILE__) . "/photos/imgs/" . $this->person_id . ".png";
         $mode = "r";

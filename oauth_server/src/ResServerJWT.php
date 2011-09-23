@@ -50,7 +50,7 @@ class ResServerJWT {
         //var_dump($res);
         return $res;
     }
-    
+
     protected function readJWT(){
         $dev = false;
         $jwt_parts = explode(".", $this->jwt);
@@ -63,14 +63,14 @@ class ResServerJWT {
         $fp = fopen($this->pubKeyDir, "r");
         $pubkey = fread($fp, 8192);
         fclose($fp);
-        $pubkeyid = openssl_get_publickey($pubkey);        
-        $ok = openssl_verify($signin, $jwt_signin_decoded, $pubkeyid);                
+        $pubkeyid = openssl_get_publickey($pubkey);
+        $ok = openssl_verify($signin, $jwt_signin_decoded, $pubkeyid);
         openssl_free_key($pubkeyid);
         if($ok)
                 $dev = true;
-        $this->jwt_claims = json_decode(ResServerJWT::base64urldecode($jwt_parts[1]), true);        
+        $this->jwt_claims = json_decode(ResServerJWT::base64urldecode($jwt_parts[1]), true);
         return $dev;
-        
+
     }
 
     public function decodeClaims($jwt_encoded){

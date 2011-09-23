@@ -3,8 +3,9 @@
  * Class that permits to load the keys file.
  */
 class AuthServerList {
-    private $keys;
-    
+    public $keys;
+    private $authzID;
+    private $authzURL;
     public function __construct($dir = "") {
         $this->keys=array();
        if ($dir == '') {
@@ -14,22 +15,24 @@ class AuthServerList {
         }
         $this->loadASs($file);
     }
-    public function checkTokenKey($token,$digest) {
+    public function checkAuthzKey($authzID) {
         $dev = false;
         foreach($this->keys as $k){
-            $decrypt = hash_hmac('sha256', $token, $k);
-            if(0==strcmp($digest,$decrypt)){
+            $crypt = hash_hmac('sha256', $this->authzID, $k);
+            if(0==strcmp($crypt, $authzID)){
                 $dev = true;
             }
         }
         return $dev;
     }
-    
+
     private function loadASs($file) {
         $xml = simplexml_load_file($file);
         if(strcmp($xml->getName(),"AuthServers")==0) {
             foreach( $xml->children() as $child) {
-                $this->keys[]=(string)$child->Key;
+                $this->authzID = (string)$child['id'];
+                $this->authzURL = (string)$child['url'];
+                $this->keys[(string)$child['id']]=(string)$child->Key;
             }
         }else {
             header("HTTP/1.0 400 Bad Request");
@@ -38,5 +41,19 @@ class AuthServerList {
             echo json_encode(array("error" => "Bad format of authServers.xml"));
         }
     }
+
+    public function getAuthzID(){
+        return $this->authzID;
+    }
+
+    public function getAuthzURL(){
+        return $this->authzURL;
+    }
 }
+
+//$var = new AuthServerList();
+//
+//echo '<pre>';
+//print_r($var->keys);
+//echo '</pre>';
 ?>

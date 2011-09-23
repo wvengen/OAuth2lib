@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OAuthClient>
-    
+
     <!--Authorization Server Configuration*-->
     <AuthServerConfig>
         <!-- Type of the assertion
@@ -36,7 +36,7 @@
         </ResponseFormats>
     </ResServerConfig>
 
-    
+
  <!--Client App Configuration-->
     <ClientConfig>
         <ClientID>app_client_1</ClientID>

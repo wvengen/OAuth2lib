@@ -12,7 +12,7 @@ class AuthzServerJWT {
     protected $privKeyDir;  // $privKeyDir = file//./loquesea.pem
 
     public function  __construct($pKD){
-        $this->privKeyDir = $pKD;   
+        $this->privKeyDir = $pKD;
     }
 
     public function encode($clientID, $tokenInfo, $scope, $authzServerID, $authServerID_encoded){
@@ -32,7 +32,7 @@ class AuthzServerJWT {
     // Hay que mejorarla para que entren como parámetros las claims que vengan de la petición OAuth
     public function buildJSON($clientID, $tokenInfo, $scope, $authzServerID, $authServerID_encoded){
         $claims = array();
-        $claims['iat'] = time();        
+        $claims['iat'] = time();
         $time = $claims['iat'] + 3600;
         $claims['exp'] = $time;
         $claims['typ'] = 'OAuthJWT';
@@ -44,7 +44,7 @@ class AuthzServerJWT {
         $claims['authzID'] = $authServerID_encoded;
         $this->jsonClaims = json_encode($claims);
     }
-    
+
     protected  function buildJWT(){
         $jwt_headers = array("typ" => "JWT",
                              "alg" => "RS1",

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <errors>
     <error id="invalid_request">
-        <error_description>The request is missing a required parameter, 
+        <error_description>The request is missing a required parameter,
         includes an unsupported parameter or parameter value, repeats the same parameter,
         uses more than one method for including an access token, or is otherwise malformed.
         The resource server MUST respond with the HTTP 400 (Bad Request) status

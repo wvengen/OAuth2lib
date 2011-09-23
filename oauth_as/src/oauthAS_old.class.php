@@ -57,8 +57,8 @@ class oauthAS {
         $this->assertion_type = null;
         $this->scope = null;
         $this->access_token = null;
-     
-        
+
+
     }
 
     private function error($string) {
@@ -171,7 +171,7 @@ class oauthAS {
         if($pos===false){
             $res = $scope;
         }else{
-            $res =  substr($scope, 0,$pos);           
+            $res =  substr($scope, 0,$pos);
         }
         return $res;
     }
@@ -244,7 +244,7 @@ class oauthAS {
 //        $token = hash_hmac("sha256", $message, $this->servers->getKey($this->cleanScope($this->scope))) . ":" . $message;
 //        $this->access_token = $token;
 
-        
+
 
         PWT::init($this->client_id,"file://./mykey.pem");
         $pwt = new PWT(PWT::query);
@@ -264,7 +264,7 @@ class oauthAS {
 //$wire = $pwt->encode();
 //$var = $pwt->getJWT();
 //var_dump($var);
-        
+
     }
 
     /**

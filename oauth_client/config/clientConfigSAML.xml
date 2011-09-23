@@ -1,5 +1,5 @@
 <OAuthClient>
-    <AuthServerConfig>        
+    <AuthServerConfig>
         <AssertionType>urn:oasis:names:tc:SAML:2.0:assertion</AssertionType>
         <!--  The access grant type included in the request. In this library the type is "assertion". -->
         <GrantType>assertion</GrantType>

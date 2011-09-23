@@ -9,10 +9,11 @@ require_once 'policy.class.php';
 class sirAssertionChecking implements IAssertionChecking {
 
     private $assertion;
-    private $policy;
-    private $personId;
+    public $policy;
+    private $tokenInfo;
     private $error;
     private $scope;
+    private $tokenFormat;
 
     /**
      * Load the policies from a  given file.
@@ -22,6 +23,9 @@ class sirAssertionChecking implements IAssertionChecking {
         $this->error = false;
         $this->scope = $this->cleanScope($scope);
         $this->policy = array();
+        $this->tokenFormat = "%sho%";
+        //$this->tokenInfo = null;
+        $this->tokenInfo = array();
         if ($dir == '') {
              $file = dirname(dirname(__FILE__)) . "/config/policies.xml";
         }else{
@@ -49,24 +53,50 @@ class sirAssertionChecking implements IAssertionChecking {
      * @param array $assertion Assertion to check
      * @return bool. True if the policy matches the assertion.
      */
-    public function checkAssertion($assertion) {
-        $this->assertion = $assertion;
+    public function checkAssertion($userAssertion) {
+        /*$userAssertion = explode(",",$userAssertion);
+	$userAttrs = array();
+	foreach($userAssertion as $elem){
+            $aux = explode("=",$elem);
+            $userAttrs[$aux[0]] = $aux[1];
+	}*/
+        // hago uso del método del PoA getAttributes para obtener la aserción
+        // mandando la aserción como array en vez de como cadena
+        $this->assertion = $userAssertion;
         $dev = false;
         if ($this->matchRules() != false) {
-            if (isset($this->assertion['uid'])) {				
-                $this->personId = $this->assertion['uid'];
+            $this->tokenInfo = $this->generateTokenInfo();
+            if($this->tokenInfo!=null){
                 $dev = true;
-            }else{
-				if (isset($this->assertion['sPUC'])) {				
-	                $this->personId = $this->assertion['sPUC'];
-	                $dev = true;
-				}else if(isset($this->assertion['ePTI']) && isset($this->assertion['sHO']) ){
-					$this->personId = $this->assertion['ePTI']."@".$this->assertion['sHO'];
-	                $dev = true;
-				}
-			}
+            }
         }
         return $dev;
+    }
+    //TODO: mover esta a función a policies
+    private function generateTokenInfo(){
+//		$string_ret = null;
+//		foreach($this->tokenFormat->children() as $attribute){
+//			$att = trim($attribute,'%');
+//			if(array_key_exists($att, $this->assertion)){
+//                            if($string_ret != null)
+//                                $string_ret .= "&&";
+//                            $string_ret .= $this->assertion[$att];
+//                        }else if(0==strcmp($att,"scope")){
+//                            if($string_ret != null)
+//                                $string_ret .= "&&";
+//                            $string_ret .= $this->scope;
+//                        }
+//		}
+//        return $string_ret;
+        $array_ret = array();
+        foreach($this->tokenFormat->children() as $attribute){
+            $att = trim($attribute, '%');
+            if(array_key_exists($att, $this->assertion))
+                    $array_ret[$att] = $this->assertion[$att];
+            elseif(strcmp($att, 'scope') == 0)
+                    $array_ret['scope'] = $this->scope;
+        }
+        return $array_ret;
     }
 
     /**
@@ -78,7 +108,7 @@ class sirAssertionChecking implements IAssertionChecking {
         $dev = true;
         if (sizeof($this->policy) > 0) {
             foreach ($this->policy as $pol) {
-                $dev = $dev && $pol->checkPolicy($this->assertion);
+                $dev = $dev && $pol->checkPolicy($this->assertion, $this->assertion_type);
             }
         } else {
             $dev = false;
@@ -91,27 +121,58 @@ class sirAssertionChecking implements IAssertionChecking {
      * @param <type> $rulesfile File of the policy
      * @return AssertionPolicy. The Policy.
      */
-    protected function getPolicy($rulesfile) {
+    public function getPolicy($rulesfile) {
         $xml = simplexml_load_file($rulesfile);
-        if (strcmp($xml->getName(), "AssertionList") == 0)
+        if (strcmp($xml->getName(), "AssertionList") == 0){
             foreach ($xml->children() as $policy) {
-                if (0 == strcmp("papi", $policy['type']))
+                if (0 == strcmp("papi", $policy['type'])){
                     foreach ($policy->children() as $pol) {
-                        if (0 == strcmp($this->scope, $pol['scope']))
+                        if (0 == strcmp($this->scope, $pol['scope'])){
+                            $this->tokenFormat = $pol->TokenFormat;
                             foreach ($pol->Policy as $p) {
+                                //var_dump($p);
+                                //file_put_contents('/Users/kurtiscobainis/Desktop/prueba2.txt', $p . PHP_EOL, FILE_APPEND | LOCK_EX );
                                 $this->policy[] = new AssertionPolicy($p);
                             }
+						}
                     }
+				}
             }
+		}
+
         return $this->policy;
     }
+
+/*
+<Assertion type="papi">
+    <Policies scope="http://www.rediris.es/sir/api/sps_available.php">
+           <!-- %sHO% | %sPUC% | %ePTI% | %mail% | %uid%| %scope% -->
+        <TokenFormat>
+			<format>%sHO%</format>
+			<format>%scope%</format>
+		</TokenFormat>
+        <Policy>
+            <Attributes check="all" >
+                <Attribute name="ePA" value="staff" />
+                 <!--<Attribute name="ePE" value="urn:mace:dir:entitlement:common-lib-terms"/>-->
+            </Attributes>
+        </Policy>
+        <Policy>
+            <Attributes check="any" >
+                <Attribute name="sHO" value="rediris.es" />
+                <Attribute name="sHO" value="fecyt.es" />
+            </Attributes>
+        </Policy>
+    </Policies>
+
+*/
 
     /**
      * Person Id getter
      * @return String: The scope.
      */
-    public function getPersonId() {
-        return $this->personId;
+    public function  getTokenInfo() {
+        return $this->tokenInfo;
     }
 
     public function getError() {

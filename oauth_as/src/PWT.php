@@ -259,7 +259,7 @@ class PWT {
 		$this->claims["aud"] = $this->audience;
 		$this->claims["ret"] = $this->returnURL;
 // Claims in replies
-		if (!empty($this->result)) { 
+		if (!empty($this->result)) {
 			    $this->claims["oas"] = $this->attSource;
 			    $this->claims["res"] = $this->result;
 			    $this->claims["irt"] = $this->inReferenceTo;
@@ -328,7 +328,7 @@ class PST {
 	}
 	public function encode () {
 // Return a wire-coded value from this PST
-		$this->buildJSON(); 
+		$this->buildJSON();
 		$aesres = $this->initAES();
 		if ($aesres) {
 			return PWT::base64urlencode (mcrypt_generic($aesres,gzcompress($this->jsonClaims)));
