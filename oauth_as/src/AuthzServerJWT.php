@@ -18,7 +18,8 @@ class AuthzServerJWT {
     public function encode($clientID, $tokenInfo, $scope, $authzServerID, $authServerID_encoded){
         $this->buildJSON($clientID, $tokenInfo, $scope, $authzServerID, $authServerID_encoded);
         $this->buildJWT();
-        return AuthzServerJWT::base64urlencode($this->jwt);
+        //return AuthzServerJWT::base64urlencode($this->jwt);
+        return $this->jwt;
     }
 
     public static function base64urlencode($in){
@@ -46,7 +47,7 @@ class AuthzServerJWT {
     
     protected  function buildJWT(){
         $jwt_headers = array("typ" => "JWT",
-                             "alg" => "RS256",
+                             "alg" => "RS1",
                              "pav" => "2.0");
         $jwt_json_headers = AuthzServerJWT::base64urlencode(json_encode($jwt_headers));
         $jwt_json_claims = AuthzServerJWT::base64urlencode($this->jsonClaims);
@@ -75,7 +76,7 @@ class AuthzServerJWT {
 }
 
 
-$var = new AuthzServerJWT("/Users/kurtiscobainis/Sites/html/pruebas/mykey.pem");
+//$var = new AuthzServerJWT("/Users/kurtiscobainis/Sites/html/pruebas/mykey.pem");
 //$jwt_encoded = $var->encode();
 //var_dump($jwt_encoded);
 

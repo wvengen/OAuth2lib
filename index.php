@@ -29,6 +29,9 @@ include 'PoA.php';
     //$image = $result['data']['image'];
     //header("Content-Type: ".$result['data']['mime']); 
     $tokenPAPI = $oauthclientPAPI->getAccess_token();
+    
+
+
     echo '<b>TOKEN:</b>' . $tokenPAPI . '<br>';
 
     $jwt_decodedPAPI = new ResServerJWT("/Users/kurtiscobainis/Sites/html/pruebas/gn3-sts.crt");

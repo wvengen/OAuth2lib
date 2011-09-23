@@ -16,7 +16,8 @@ class ResServerJWT {
     }
 
     public function decode($jwt_encoded){
-        $this->jwt = ResServerJWT::base64urldecode($jwt_encoded);
+        //$this->jwt = ResServerJWT::base64urldecode($jwt_encoded);
+        $this->jwt = $jwt_encoded;
         return $this->readJSON();
 
     }
@@ -54,7 +55,7 @@ class ResServerJWT {
         $dev = false;
         $jwt_parts = explode(".", $this->jwt);
         $jwt_headers = json_decode(ResServerJWT::base64urldecode($jwt_parts[0]), true);
-        if ($jwt_headers['typ'] != 'JWT' || $jwt_headers['alg'] != 'RS256' || $jwt_headers['pav'] != '2.0' ) {
+        if ($jwt_headers['typ'] != 'JWT' || $jwt_headers['alg'] != 'RS1' || $jwt_headers['pav'] != '2.0' ) {
             exit("FIXME: Invalid JWT header");
         }
         $jwt_signin_decoded = ResServerJWT::base64urldecode($jwt_parts[2]);
@@ -70,6 +71,13 @@ class ResServerJWT {
         $this->jwt_claims = json_decode(ResServerJWT::base64urldecode($jwt_parts[1]), true);        
         return $dev;
         
+    }
+
+    public function decodeClaims($jwt_encoded){
+        $claims = array();
+        $jwt_parts = explode(".", $jwt_encoded);
+        $claims = json_decode(ResServerJWT::base64urldecode($jwt_parts[1]), true);
+        return $claims;
     }
 
 
