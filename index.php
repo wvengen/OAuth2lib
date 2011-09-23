@@ -14,8 +14,7 @@ include 'PoA.php';
 //    echo '</pre><hr>';
     echo '<h3><hr>PAPI:<br></h3>';
     $filePAPI = dirname(dirname(__FILE__)) . '/trunk/oauth_client/config/clientConfig.xml';
-    $oauthPAPI = new OAuth($filePAPI);
-    //$oauthclientPAPI = $oauthPAPI->doOAuthFlow('sPUC=urn:mace:terena.org:schac:personalUniqueCode:es:rediris:sir:mbid:{md5}8bd4ef2432dc88224b13b8d9d5e2377a,cn=Luis Javier Gomez Santana,mail=luis.gomez@rediris.es,uid=luisja,ePTI=13cbd85921629eb77b8d266ff6f5a414,ePA=staff,sHO=rediris.es,ePE=|urn:mace:dir:entitlement:common-lib-terms');
+    $oauthPAPI = new OAuth($filePAPI);    
     $oauthclientPAPI = $oauthPAPI->doOAuthFlow($attrs);
     if (!$oauthclientPAPI) {
         $contentPAPI = $oauthPAPI->getError();
