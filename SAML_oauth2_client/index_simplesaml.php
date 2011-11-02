@@ -5,30 +5,49 @@
 include_once 'src/OAuth.class.php';
 //We start off with loading a file which registers the simpleSAMLphp classes with the autoloader.
 require_once('utils/simplesamlphp/lib/_autoload.php');
+
+$content='';
 //We select our authentication source:
-$as = new SimpleSAML_Auth_Simple('default-sp');
-//We then require authentication:
-$as->requireAuth();
-//And print the attributes:
-$attributes = $as->getAttributes();
-error_log(print_r($attributes,true));
-$assertion = $attributes;
-$content="";
-if($assertion=="") {
-        $content.="<div class='error'>Usuario no autorizado.</div>";
-}else{
-        $sho =$assertion['urn:mace:dir:attribute-def:eduPersonScopedAffiliation'][0];
-        $content .="<p>Por pertenecer a <b>'".$sho."'</b> puedes acceder a los siguientes servicios:";
-        $client = new OAuth(dirname(__FILE__)."/own_config");
-        $oauth_as="https://oauth-server.rediris.es/oauth2_09/oauth_as/tokenEndpoint.php";
-        $oauth_rs="https://oauth-server.rediris.es/oauth2_09/oauth_server/serverEndpoint.php";
-        $client->setAs($oauth_as);
-        $client->setRs($oauth_rs);
-        if(!$client->doOAuthFlow($assertion)){
-            $content.=$client->getError();
-        }else{
-            $content.=$client->getResource();
-        }        
+$sp = 'default-sp-userpass';
+$as = new SimpleSAML_Auth_Simple($sp);
+
+// handle logout
+if (!isset($_REQUEST['logout'])) {
+	if ($as->isAuthenticated()) {
+		try {
+			$as->logout();
+		} catch(Exception $e) {
+			$content.="<div class='error'>SimpleSAML error: ".$e->getMessage()."</div>";
+		}
+	} else {
+		$content .= "<p>You been logged out.</p>";
+		$content .= "<p><a href='?login'>Play again</a>.</p>";
+	}
+
+// handle normal flow
+} else {
+
+	//We then require authentication:
+	$as->requireAuth();
+	//And print the attributes:
+	$attributes = $as->getAttributes();
+	error_log(print_r($attributes,true));
+	$assertion = $attributes;
+	if($assertion=="") {
+		$content.="<div class='error'>Access denied.</div>";
+	} else {
+		$sho=$assertion['urn:mace:dir:attribute-def:eduPersonScopedAffiliation'];
+		if (is_null($sho)) $sho = $assertion['eduPersonScopedAffiliation'];
+		if (is_array($sho)) $sho = $sho[0];
+		$content .="<p>Because of your affiliation <b>'".$sho."'</b>, you can access the following services:";
+		$client = new OAuth(dirname(__FILE__)."/own_config");
+		if(!$client->doOAuthFlow($assertion)){
+		    $content.=$client->getError();
+		}else{
+		    $content.=$client->getResource();
+		}        
+		$content .= "<p><a href='?logout'>logout</a></p>";
+	}
 }
 include 'html/template.php';
 ?>  
