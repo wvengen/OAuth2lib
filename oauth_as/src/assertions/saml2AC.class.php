@@ -24,10 +24,9 @@ class saml2AssertionChecking implements IAssertionChecking {
             $file = $dir."policies.xml";
         }
         if(0==sizeof($this->getPolicy($file))) {
-            error_log("ERROR EXTRAYENDO POLÍTICAS");
+            error_log("saml2AssertionChecking: empty policy file");
             $this->error = true;
         }
-
     }
 
     private function cleanScope($scope){
@@ -45,15 +44,18 @@ class saml2AssertionChecking implements IAssertionChecking {
      * @return bool. True if the policy matches the assertion.
      */
     public function checkAssertion($assertion) {
-     //   error_log("saml2AssertionChecking.checkAssertion");
-    //    $this->assertion = $this->transformAssertion($assertion);
-      $this->assertion=$assertion;
-        $dev = false;
+        //error_log("saml2AssertionChecking.checkAssertion");
+        //$this->assertion = $this->transformAssertion($assertion);
+        $this->assertion=$assertion;
         if($this->matchRules()!=false) {
-            $this->personId = $this->assertion['urn:mace:dir:attribute-def:eduPersonTargetedID'][0];
-            $dev = true;
+            $this->personId = @$this->assertion['urn:mace:dir:attribute-def:eduPersonTargetedID'][0];
+            if (empty($this->personId)) $this->personId = @$this->assertion['eduPersonTargetedID'][0];
+            if (empty($this->personId)) $this->personId = @$this->assertion['uid'][0];
+            if (empty($this->personId))
+              error_log("saml2AssertionChecking: empty personId!");
+            return true; 
         }
-        return $dev;
+        return false;
     }
     /**
      * Function that decides if the assertion matches the policy,

@@ -5,7 +5,7 @@
  * @author Elena Lozano <elena.lozano@rediris.es>
  * @package oauth_client
  */
-require_once ('oauth_client/src/response_formats/IFormattingResource.interface.php');
+require_once ('IFormattingResource.interface.php');
 
 class FormattingResource implements IFormattingResource {
 

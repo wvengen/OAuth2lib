@@ -2,7 +2,7 @@
 /**
  * Resource example class
  */
-include_once('oauth_server/src/resources/IServerResource.interface.php');
+include_once('src/resources/IServerResource.interface.php');
 
 class helloResource implements IServerResource {
     const SC = "scope-hello_world";
@@ -20,17 +20,20 @@ class helloResource implements IServerResource {
      * @param <Array> $extra Extra parameters
      * @return string Resource
      */
-    public function getResource($scope, $extra=null) {     
-        $this->person_id = $extra['person_id'];
-	$this->person_name = $extra['person_name'];
-	$string = "Hello, this is the protected resource; you are ";
-	if (!empty($this->person_name)) $string .= $this->person_name;
-	else if (!empty($this->person_id)) $string .= $this->person_id;
-	else $string .= "(unknown, something's wrong!)";
-	$string .= ". The scope is $scope.";
-        return $string;
+    public function getResource($scope, $extra=null) {
+        return "Hello, this is the protected resource; the scope is $scope.";
     }
-
+    
+    /**
+    * Function that checks if the scope is available for the person_id
+    * @param <type> $scope
+    * @param <type> $person_id
+    * @return <type>
+    */
+    public function checkScope($scope, $person_id=null) {
+      return true;
+    }
+    
     public function hasHeader() {
         $dev = false;
         if (null!=$this->header) {

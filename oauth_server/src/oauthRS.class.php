@@ -1,8 +1,8 @@
 <?php
 
-include_once('oauth_server/src/ErrorList.class.php');
-include_once('oauth_server/src/AuthServerList.class.php');
-include_once('oauth_server/src/LoadResourceConfig.class.php');
+include_once('ErrorList.class.php');
+include_once('AuthServerList.class.php');
+include_once('LoadResourceConfig.class.php');
 
 class oauthRS {
 

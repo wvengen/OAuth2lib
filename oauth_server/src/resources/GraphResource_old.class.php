@@ -2,7 +2,7 @@
 /**
  * Resource example class
  */
-include_once('src/resources/IServerResource.interface.php');
+include_once('IServerResource.interface.php');
 include_once('common.php');
 
 class IdPGraphResource implements IServerResource {

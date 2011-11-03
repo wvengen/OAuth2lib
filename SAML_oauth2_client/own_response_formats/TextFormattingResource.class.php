@@ -5,9 +5,9 @@
  * @author W. van Engen <wvengen@nikhef.nl>
  * @package oauth_client
  */
-include_once ('oauth_client/src/response_formats/IFormattingResource.interface.php');
+include_once (dirname(__FILE__).'/../../oauth_client/src/response_formats/IFormattingResource.interface.php');
 
-class PhotoFormattingResource implements IFormattingResource {
+class TextFormattingResource implements IFormattingResource {
 
     /**
      * Function that formats a Resource
@@ -15,7 +15,7 @@ class PhotoFormattingResource implements IFormattingResource {
      * @return String The html response
      */
     public function formatResource($text) {
-	return "<p>".htmlentities($base64_decode($text))."</p>";
+	return "<p>".htmlentities($text)."</p>";
     }
 }
 ?>

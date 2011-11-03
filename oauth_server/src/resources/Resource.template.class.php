@@ -2,7 +2,7 @@
 /**
  * Resource example class
  */
-include_once('oauth_server/src/resources/IServerResource.interface.php');
+include_once('IServerResource.interface.php');
 class Resource implements IServerResource {
 
     /**
