@@ -3,10 +3,12 @@
     <Assertion type="saml2">
         <Policies scope="scope-hello_world">
             <Policy>
-                <Attributes check="any" >
-                    <!--<Attribute name="urn:mace:dir:attribute-def:eduPersonScopedAffiliation" value="rediris.es"/>-->
-                  <Attribute name="cn" value="foo"/>
+                <Attributes check="none">
+                    <Attribute name="uid" value="banneduser"/>
+                    <Attribute name="mail" value="evil@spammer.ru"/>
                 </Attributes>
+                <!-- <Attributes check="all"> <Attribute .../> </Attributes> -->
+                <!-- <Attributes check="any"> <Attribute .../> </Attributes> -->
             </Policy>
             <TokenFormat>
                 <format>%uid%</format>
