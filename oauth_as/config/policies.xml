@@ -1,57 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AssertionList>
-    <Assertion type="papi">
-        <Policies scope="scope_de_prueba">
-            <TokenFormat>
-                <format>%sHO%</format>
-                <format>%mail%</format>                
-            </TokenFormat>
-            <Policy>
-                <Attributes check="any">
-                    <Attribute name="sHO" value="rediris.es"/>
-                </Attributes>
-                <Attributes check="all">
-                    <Attribute name="mail" value="luis.gomez@rediris.es"/>
-                </Attributes>
-            </Policy>
-        <!--<Policy>
-            <Attributes check="all" >
-            </Attributes>
-        </Policy>-->
-        </Policies>
-        <Policies scope="scope_de_prueba2">
-            <TokenFormat>
-                <format>%sHO%</format>
-            </TokenFormat>
-            <Policy>
-                <Attributes check="any">
-                    <Attribute name="sHO" value="rediris.es"/>
-                </Attributes>
-                <Attributes check="all">
-                    <Attribute name="mail" value="luis.gomez@rediris.es"/>
-                </Attributes>
-            </Policy>
-        <!--<Policy>
-            <Attributes check="all" >
-            </Attributes>
-        </Policy>-->
-        </Policies>
-    </Assertion>
     <Assertion type="saml2">
-        <Policies scope="scope_de_prueba">
-            <TokenFormat>
-                <format>%urn:mace:dir:attribute-def:eduPersonScopedAffiliation%</format>
-                <format>%mail%</format>
-            </TokenFormat>
+        <Policies scope="scope-hello_world">
             <Policy>
-                <Attributes check="any" >
-                    <Attribute name="urn:mace:dir:attribute-def:eduPersonScopedAffiliation" value="rediris.es"/>
+                <Attributes check="none" >
+                    <!--<Attribute name="urn:mace:dir:attribute-def:eduPersonScopedAffiliation" value="rediris.es"/>-->
                 </Attributes>
             </Policy>
-        <!--<Policy>
-            <Attributes check="all" >
-            </Attributes>
-        </Policy>-->
         </Policies>
     </Assertion>
 </AssertionList>

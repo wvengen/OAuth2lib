@@ -8,7 +8,7 @@ require_once('utils/simplesamlphp/lib/_autoload.php');
 
 $content='';
 //We select our authentication source:
-$sp = 'default-sp';
+$sp = 'default-sp-userpass';
 $as = new SimpleSAML_Auth_Simple($sp);
 
 // handle logout

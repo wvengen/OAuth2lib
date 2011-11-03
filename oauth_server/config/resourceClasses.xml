@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Resources>
-    <Scope id="scope_de_prueba">
-        <TokenFormat>
-            <format>%sHO%</format>
-            <format>%mail%</format>            
-        </TokenFormat>
-        <ResourceClass>Resource</ResourceClass>
-        <ResourceFile>Resource.template.class.php</ResourceFile>
+    <Scope id="scope-hello_world">
+        <ResourceClass>helloResource</ResourceClass>
+        <ResourceFile>own_resources/helloResource.class.php</ResourceFile>
     </Scope>    
 </Resources>
