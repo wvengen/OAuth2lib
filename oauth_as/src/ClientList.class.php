@@ -20,20 +20,20 @@ class ClientList {
     }
     private function loadClients($file) {
         $xml = simplexml_load_file($file);
+        $aux = array();
         if(strcmp($xml->getName(),"Keys")==0) {
             $arr = $xml->children();
-            $aux =array();
             foreach($arr as $child) {
                 $id=$child['id'];
                 $val = $child['value'];
                 $aux[(string)$id] = (string)$val;
             }
         }else {
-            $aux = null;
+            error_log("ClientList: bad format of clientKeys.xml");
             header("HTTP/1.0 400 Bad Request");
             header("Content-Type: application/json");
             header("Cache-control:no-store");
-            echo json_encode(array("error" => "Bad format of errors.xml"));
+            echo json_encode(array("error" => "Bad format of clientKeys.xml"));
         }
         $this->clients = $aux;
     }

@@ -7,7 +7,7 @@ class ServerKeys {
     protected $debug_active;
 
     public function __construct($dir = '') {
-        $this->debug_active=true;
+        $this->debug_active=false;
         $this->keys=array();
         if ($dir == '') {
              $file = dirname(dirname(__FILE__)) . "/config/serverKeys.xml";
@@ -44,10 +44,11 @@ class ServerKeys {
                 }            
             }
         }else {
+            error_log("ServerKeys: bad format of serverKeys.xml");
             header("HTTP/1.0 400 Bad Request");
             header("Content-Type: application/json");
             header("Cache-control:no-store");
-            echo json_encode(array("error" => "Bad format of ASConfig.xml"));
+            echo json_encode(array("error" => "Bad format of serverKeys.xml"));
         }
     }
 

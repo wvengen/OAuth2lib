@@ -61,6 +61,7 @@ class ErrorList {
                 }
             }
         }else {
+            error_log("ErrorList: bad format of errors.xml");
             header("HTTP/1.0 400 Bad Request");
             header("Content-Type: application/json");
             header("Cache-control:no-store");
