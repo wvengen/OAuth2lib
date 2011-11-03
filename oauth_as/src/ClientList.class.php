@@ -29,6 +29,7 @@ class ClientList {
                 $aux[(string)$id] = (string)$val;
             }
         }else {
+            $aux = null;
             header("HTTP/1.0 400 Bad Request");
             header("Content-Type: application/json");
             header("Cache-control:no-store");

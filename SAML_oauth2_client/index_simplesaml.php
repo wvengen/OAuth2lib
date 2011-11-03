@@ -2,7 +2,7 @@
 /**
  * @package oauth_client
  */
-include_once 'src/OAuth.class.php';
+include_once('../oauth_client/src/OAuth.class.php');
 //We start off with loading a file which registers the simpleSAMLphp classes with the autoloader.
 require_once('utils/simplesamlphp/lib/_autoload.php');
 
@@ -12,7 +12,7 @@ $sp = 'default-sp-userpass';
 $as = new SimpleSAML_Auth_Simple($sp);
 
 // handle logout
-if (!isset($_REQUEST['logout'])) {
+if (isset($_REQUEST['logout'])) {
 	if ($as->isAuthenticated()) {
 		try {
 			$as->logout();
@@ -27,6 +27,7 @@ if (!isset($_REQUEST['logout'])) {
 // handle normal flow
 } else {
 
+	
 	//We then require authentication:
 	$as->requireAuth();
 	//And print the attributes:
@@ -36,9 +37,8 @@ if (!isset($_REQUEST['logout'])) {
 	if($assertion=="") {
 		$content.="<div class='error'>Access denied.</div>";
 	} else {
-		$sho=$assertion['urn:mace:dir:attribute-def:eduPersonScopedAffiliation'];
-		if (is_null($sho)) $sho = $assertion['eduPersonScopedAffiliation'];
-		if (is_array($sho)) $sho = $sho[0];
+		$sho=@$assertion['urn:mace:dir:attribute-def:eduPersonScopedAffiliation'][0];
+		if (is_null($sho)) $sho = @$assertion['eduPersonScopedAffiliation'][0];
 		$content .="<p>Because of your affiliation <b>'".$sho."'</b>, you can access the following services:";
 		$client = new OAuth(dirname(__FILE__)."/own_config");
 		if(!$client->doOAuthFlow($assertion)){

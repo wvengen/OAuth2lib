@@ -6,8 +6,8 @@
  * @author Elena Lozano <elena.lozano@rediris.es>
  * @package oauth_client
  */
- include('oauth_client/src/OAuthClient.class.php');
- include('oauth_client/src//LoadConfig.class.php');
+ include('OAuthClient.class.php');
+ include('LoadConfig.class.php');
 
 class OAuth {
     const HEADER = "HTTP_Authorization_Header";

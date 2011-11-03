@@ -5,11 +5,11 @@
  * @author Elena Lozano <elena.lozano@rediris.es>
  * @package oauth_as
  */
-include_once('oauth_as/src/assertions/saml2AC.class.php');
-include_once('oauth_as/src/assertions/sirAC.class.php');
-include_once('oauth_as/src/ErrorList.class.php');
-include_once('oauth_as/src/ClientList.class.php');
-include_once('oauth_as/src/ServerKeys.class.php');
+include_once('assertions/saml2AC.class.php');
+include_once('assertions/sirAC.class.php');
+include_once('ErrorList.class.php');
+include_once('ClientList.class.php');
+include_once('ServerKeys.class.php');
 
 
 class oauthAS {
