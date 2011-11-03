@@ -39,8 +39,8 @@
 
     <!--Client App Configuration-->
     <ClientConfig>
-       <ClientID>oauth_saml_client</ClientID>
-       <ClientSecret>key_for_oauth_saml_client</ClientSecret>
+        <ClientID>oauth_saml_client</ClientID>
+        <ClientSecret>key_for_oauth_saml_client</ClientSecret>
         <!-- Error Response type. Defined by the constants HTML or JSON.. -->
         <ErrorResponseType>HTML</ErrorResponseType>
         <DefaultScope>scope-hello_world</DefaultScope>

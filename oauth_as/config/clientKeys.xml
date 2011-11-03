@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Keys>
-  <Key id="oauth_saml_client" value="key_for_oauth_saml_client" />
-</Keys>
+<Clients>
+    <Client id="oauth_saml_client">
+        <Key>key_for_oauth_saml_client</Key>
+    </Client>
+</Clients>

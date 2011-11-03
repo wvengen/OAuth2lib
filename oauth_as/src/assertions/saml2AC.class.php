@@ -8,7 +8,8 @@ require_once 'policy.class.php';
 class saml2AssertionChecking implements IAssertionChecking {
     private $assertion;
     private $policy;
-    private $personId;
+    private $tokenInfo;
+    private $tokenFormat;
     private $error;
     private $scope;
     /**
@@ -18,6 +19,9 @@ class saml2AssertionChecking implements IAssertionChecking {
     public function __construct($scope,$dir = "") {
         $this->error = false;
         $this->scope = $this->cleanScope($scope);
+        $this->policy = array();
+        $this->tokenFormat = '%urn:mace:dir:attribute-def:eduPersonScopedAffiliation%';
+        $this->tokenInfo = array();
         if ($dir == '') {
              $file = dirname(dirname(__FILE__)) . "/config/policies.xml";
         }else{
@@ -47,15 +51,43 @@ class saml2AssertionChecking implements IAssertionChecking {
         //error_log("saml2AssertionChecking.checkAssertion");
         //$this->assertion = $this->transformAssertion($assertion);
         $this->assertion=$assertion;
+        $dev = false;
         if($this->matchRules()!=false) {
-            $this->personId = @$this->assertion['urn:mace:dir:attribute-def:eduPersonTargetedID'][0];
-            if (empty($this->personId)) $this->personId = @$this->assertion['eduPersonTargetedID'][0];
-            if (empty($this->personId)) $this->personId = @$this->assertion['uid'][0];
-            if (empty($this->personId))
-              error_log("saml2AssertionChecking: empty personId!");
-            return true; 
+            $this->tokenInfo = $this->generateTokenInfo();
+            if(!is_null($this->tokenInfo))
+            $dev = true;
         }
-        return false;
+        return $dev;
+    }
+
+    private function generateTokenInfo(){
+       $string_ret = null;
+       foreach($this->tokenFormat->children() as $attribute){
+           $att = trim($attribute,'%');
+           if($string_ret != NULL) $string_ret .= '&&';
+           if(array_key_exists($att, $this->assertion)){
+               if (is_array($this->assertion[$att]))
+                 //$string_ret .= implode(', ', $this->assertion[$att]);
+                 $string_ret .= $this->assertion[$att][0];
+               else
+                 $string_ret .= $this->assertion[$att];
+           } elseif(strcmp($att, 'scope')==0){
+               $string_ret .= $this->scope;
+           }
+       }
+       return $string_ret;
+/*
+        $array_ret = array();
+        foreach($this->tokenFormat->children() as $attribute){
+            $att = trim($attribute, '%');
+            if(array_key_exists($att, $this->assertion)){
+                $array_ret[$att] = $this->assertion[$att];
+            }elseif(strcmp($att, 'scope') == 0){
+                $array_ret['scope'] = $this->scope;
+            }
+        }
+        return $array_ret;
+        */
     }
     /**
      * Function that decides if the assertion matches the policy,
@@ -70,6 +102,7 @@ class saml2AssertionChecking implements IAssertionChecking {
                 $dev = $dev && $pol->checkPolicy($this->assertion);
             }
         }else {
+            error_log("denying empty policy");
             $dev = false;
         }
         return $dev;
@@ -82,16 +115,20 @@ class saml2AssertionChecking implements IAssertionChecking {
      */
       protected function getPolicy($rulesfile) {
         $xml = simplexml_load_file($rulesfile);
-        if (strcmp($xml->getName(), "AssertionList") == 0)
+        if (strcmp($xml->getName(), "AssertionList") == 0){
             foreach ($xml->children() as $policy) {
-                if (0 == strcmp("saml2", $policy['type']))
+                if (0 == strcmp("saml2", $policy['type'])){
                     foreach ($policy->children() as $pol) {
-                        if (0 == strcmp($this->scope, $pol['scope']))
+                        if (0 == strcmp($this->scope, $pol['scope'])){
+                            $this->tokenFormat = $pol->TokenFormat;
                             foreach ($pol->Policy as $p) {
                                 $this->policy[] = new AssertionPolicy($p);
                             }
+                         }
                     }
+                }
             }
+        }
         return $this->policy;
     }
 
@@ -99,9 +136,9 @@ class saml2AssertionChecking implements IAssertionChecking {
      * Person Id getter
      * @return String: The personid.
      */
-    public function getPersonId() {
-   //     error_log("saml2AssertionChecking.getPersonId");
-        return $this->personId;
+    public function getTokenInfo() {
+   //     error_log("saml2AssertionChecking.getTokenInfo");
+        return $this->tokenInfo;
     }  
 
     public function getError() {

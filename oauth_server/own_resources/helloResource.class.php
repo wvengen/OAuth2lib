@@ -21,17 +21,11 @@ class helloResource implements IServerResource {
      * @return string Resource
      */
     public function getResource($scope, $extra=null) {
-        return "Hello, this is the protected resource; the scope is $scope.";
-    }
-    
-    /**
-    * Function that checks if the scope is available for the person_id
-    * @param <type> $scope
-    * @param <type> $person_id
-    * @return <type>
-    */
-    public function checkScope($scope, $person_id=null) {
-      return true;
+        $who = @$extra['name'];
+        if (empty($who)) $who = @$extra['eppn'];
+        if (empty($who)) $who = @$extra['mail'];
+        if (empty($who)) $who = '(unknown person)';
+        return "Hello ".$who.", this is the protected resource; the scope is $scope.\n";
     }
     
     public function hasHeader() {

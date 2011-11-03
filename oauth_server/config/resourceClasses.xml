@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Resources>
     <Scope id="scope-hello_world">
+        <TokenFormat>
+            <format>%eppn%</format>
+            <format>%name%</format>
+            <format>%mail%</format>
+        </TokenFormat>
         <ResourceClass>helloResource</ResourceClass>
         <ResourceFile>own_resources/helloResource.class.php</ResourceFile>
     </Scope>    

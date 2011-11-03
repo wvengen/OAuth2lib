@@ -93,16 +93,6 @@ class IdPGraphResource implements IServerResource {
         return json_encode($json);
     }
 
-    /**
-     * Function that checks if the scope is available for the person_id
-     * @param <type> $scope
-     * @param <type> $person_id
-     * @return <type>
-     */
-    public function checkScope($scope, $person_id=null) {
-        return true;
-    }
-
      public function hasHeader() {
         $dev = false;
         if (null!=$this->header) {

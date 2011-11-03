@@ -6,10 +6,12 @@
 class LoadResourceConfig {
     protected $classes;
     protected $archive_names;
+    protected $token_formats;
 
     public function __construct($dir="") {
         $this->classes = array();
         $this->archive_names = array();
+        $this->token_formats = array();
         if ($dir == '') {
             $file = dirname(dirname(__FILE__)) . "/config/resourceClasses.xml";
         } else {
@@ -27,6 +29,11 @@ class LoadResourceConfig {
                              $this->classes[$id] = (String) $child->ResourceClass;
                         if(isset($child->ResourceFile))
                               $this->archive_names[$id] = (String) $child->ResourceFile;
+                        if(isset($child->TokenFormat)){
+							foreach($child->TokenFormat->children() as $ch){
+								$this->token_formats[$id][] = trim((string)$ch,"%");
+							}
+						}
                    }
         } catch (Exception $exc) {
             header("HTTP/1.0 400 Bad Request");
@@ -52,6 +59,12 @@ class LoadResourceConfig {
         return array_key_exists($scope, $this->archive_names);
     }
 
+    public function getTokenFormats($scope){
+        return $this->token_formats[$scope];
+    }
+    public function hasTokenFormats($scope) {
+        return array_key_exists($scope, $this->token_formats);
+    }
 
 
 }

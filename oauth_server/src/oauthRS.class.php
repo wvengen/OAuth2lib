@@ -14,7 +14,8 @@ class oauthRS {
     protected $extra;
     protected $resource;
     protected $token;
-    protected $person_id;
+    protected $token_info;
+    protected $token_format;
     protected $config_dir;
 
     public function __construct($dir= "") {
@@ -34,7 +35,8 @@ class oauthRS {
         $this->scope = null;
         $this->extra = array();
         $this->token = null;
-        $this->person_id = "";
+        $this->token_info = "";
+        $this->token_format = "";
         $this->resource = null;
        
       
@@ -171,13 +173,15 @@ class oauthRS {
         if (!$this->authservers->checkTokenKey($token, $digest)) {
             $this->error = "invalid_token";
         } else {
-            $this->person_id = base64_decode($array[2]);
+            $this->token_info = base64_decode($array[2]);
             $this->scope = base64_decode($array[3]);
             $this->processScope($this->scope);
             $this->createResource($this->scope);
-            if (!$this->checkPersonScope($this->person_id)) {
+            $info = $this->addTokenInfo($this->token_info);
+            if (is_null($info)) {
                 $this->error = "insufficient_scope";
             } else {
+                $this->extra = array_merge($info, $this->extra);
                 $time = base64_decode($array[4]);
                 if (microtime(true) > $time) {
                     $dev = true;
@@ -190,13 +194,17 @@ class oauthRS {
     }
 
     /**
-     * Function that checks if the scope included in the request is a valid one.
-     * @param <type> $person_id
-     * @return boolean
      */
-    private function checkPersonScope($person_id) {
-        $this->error('checkPersonScope');
-        $dev = $this->resource->checkScope($this->scope, $person_id);
+    private function addTokenInfo($token_info) {
+        $this->error('addTokenInfo');
+        $dev=null;
+        if ($token_info != '') {
+            $token_info_attrs = explode("&&", $this->token_info);
+            if(count($this->token_format) == count($token_info_attrs)) {
+                $dev = array_combine($this->token_format, $token_info_attrs);
+            }
+        }            
+      //  $dev = $this->resource->checkScope($this->scope, $token_info);
         return $dev;
     }
 
@@ -268,6 +276,11 @@ class oauthRS {
                 include_once $conf->getArchiveName($this->scope);
                 $reflect = new ReflectionClass($class);
                 $this->resource = $reflect->newInstance();
+                if($conf->hasArchiveName($this->scope)){
+                    $this->token_format = $conf->getTokenFormats($this->scope);
+                } else {
+                    $this->error = "invalid-resource-configuration3";
+               }
             } else {
                 $this->error = "invalid-resource-configuration";
             }
