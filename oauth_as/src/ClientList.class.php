@@ -18,9 +18,11 @@ class ClientConfiguration {
     public function isClient($client_id) {
         return (array_key_exists($client_id, $this->clients));
     }
+    /* // not yet used (see comment below)
     public function getAllowedScopes($client_id){
     	return $this->clients[$client_id]["Scopes"];
     }
+    */
     private function loadClients($file) {
         $xml = simplexml_load_file($file);
         if(strcmp($xml->getName(),"Clients")==0){
@@ -29,6 +31,8 @@ class ClientConfiguration {
           foreach($arr as $child){
             $id = (string)$child['id'];
             $key = (string)$child->Key;
+            /* // Scopes are not being enforced, so ignore them for now.
+               // Besides, this can be configured in policies.xml.
             $scopes = array();
             foreach($child->AllowedScopes->children() as $scope){
               $scope_id = (string)$scope['id'];
@@ -50,16 +54,9 @@ class ClientConfiguration {
               $scopes[$scope_id] = $attributes;
             }
             $aux[$id] = array("Key"=>$key, "Scopes"=>$scopes);
+            */
+            $aux[$id] = array("Key"=>$key);
           }
-	/*	}
-        if(strcmp($xml->getName(),"Keys")==0) {
-            $arr = $xml->children();
-            $aux =array();
-            foreach($arr as $child) {
-                $id=$child['id'];
-                $val = $child['value'];
-                $aux[(string)$id] = (string)$val;
-            }*/
         }else {
             error_log("ClientList: bad format of clientKeys.xml");
             header("HTTP/1.0 400 Bad Request");
