@@ -110,6 +110,7 @@ class OAuthClient {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
         $output = curl_exec($ch);
         if (curl_errno($ch)) {
+            error_log("Curl error requesting the Access Token: ".curl_error($ch));
             $this->error = "Curl error requesting the Access Token";
         } else {
             $info = curl_getinfo($ch);
