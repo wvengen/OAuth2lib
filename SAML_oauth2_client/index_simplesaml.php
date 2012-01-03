@@ -1,7 +1,9 @@
 <?php
+
 /**
  * @package oauth_client
  */
+
 include_once('../oauth_client/src/OAuth.class.php');
 //We start off with loading a file which registers the simpleSAMLphp classes with the autoloader.
 require_once('utils/simplesamlphp/lib/_autoload.php');
